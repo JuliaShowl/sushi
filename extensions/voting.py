@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
-MNET_SHEET = '' #Spreadsheet ID here
+SHEET = '' #Spreadsheet ID here
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 SERVICE_ACCOUNT_FILE = '' #Google service account JSON here
 credentials = service_account.Credentials.from_service_account_file(
@@ -23,7 +23,7 @@ async def voteAccounts(user):
 
         # Call the Sheets API
         sheet = service.spreadsheets()
-        result = sheet.values().get(spreadsheetId=MNET_SHEET,
+        result = sheet.values().get(spreadsheetId=SHEET,
                                     range="Sheet1!A2:C").execute()
         values = result.get('values', [])
         for i in range(len(values)):
@@ -32,7 +32,7 @@ async def voteAccounts(user):
                 password = values[i][1]
                 rng = rng + str(i+2)
                 rng2 = rng2 + str(i+2)
-                sheet.values().update(spreadsheetId=MNET_SHEET,range=(rng+rng2),valueInputOption='USER_ENTERED',body={'majorDimension':'COLUMNS','values':[["Done"],[user]]}).execute()
+                sheet.values().update(spreadsheetId=SHEET,range=(rng+rng2),valueInputOption='USER_ENTERED',body={'majorDimension':'COLUMNS','values':[["Done"],[user]]}).execute()
                 return (username,password)
             if i == len(values) and values[i][2] == "Done":
                 return None
@@ -70,7 +70,7 @@ async def reset(ctx):
         service = build('sheets', 'v4', credentials=credentials)
         # Call the Sheets API
         sheet = service.spreadsheets()
-        result = sheet.values().get(spreadsheetId=MNET_SHEET,
+        result = sheet.values().get(spreadsheetId=SHEET,
                                     range="Sheet1!C2:C").execute()
         values = result.get('values', [])
         for i in range(len(values)):
