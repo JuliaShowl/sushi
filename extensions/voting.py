@@ -61,10 +61,10 @@ async def va(ctx):
     await ctx.respond(resp,flags=hikari.MessageFlag.EPHEMERAL,delete_after=5)
 
 @plugin.command
-@lightbulb.add_checks(lightbulb.checks.owner_only)
+# @lightbulb.add_checks(lightbulb.has_roles(ADD ROLE IDs HERE,mode=any)) Uncomment and add role IDs to restrict
 @lightbulb.command('votecount','Returns vote count info')
 @lightbulb.implements(lightbulb.SlashCommand)
-async def reset(ctx):
+async def votecount(ctx):
     count = 0
     try: 
         service = build('sheets', 'v4', credentials=credentials)
