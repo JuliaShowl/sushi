@@ -75,7 +75,14 @@ async def zimzalabim(ctx):
 async def pantomime(ctx):
     f = hikari.File('./media/pantomime.mp4')
     await ctx.respond(f)
-
+        
+@plugin.command
+@lightbulb.option('equation','Equation to solve', type=str)
+@lightbulb.command('solve','quick mafs')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def solve(ctx):
+    eqn = eval(ctx.options.equation)
+    await ctx.respond(eqn)
 
 def load(bot):
     bot.add_plugin(plugin)
