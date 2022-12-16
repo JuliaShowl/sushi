@@ -81,6 +81,9 @@ async def pantomime(ctx):
 @lightbulb.command('solve','quick mafs')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def solve(ctx):
+    if "life" in ctx.options.equation.lower():
+        await ctx.respond("42")
+        return
     eqn = eval(ctx.options.equation)
     await ctx.respond(eqn)
 
