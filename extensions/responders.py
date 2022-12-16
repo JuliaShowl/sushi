@@ -1,6 +1,7 @@
 import lightbulb
 import hikari
 import random
+import math
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
