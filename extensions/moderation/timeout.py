@@ -38,7 +38,7 @@ async def timeout(ctx: lightbulb.Context, user: hikari.Member, second: int, minu
     user_id = ctx.options.user.replace('<','').replace('>','').replace('@','')
     username = await ctx.bot.rest.fetch_user(user_id)
 
-    now = datetime.now(tz=pytz.timezone("Asia/Seoul"))
+    now = datetime.now()
     then = now + timedelta(days=days, hours=hour, minutes=minute, seconds=second)
     
     if (then - now).days > 28:
