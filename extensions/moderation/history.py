@@ -14,7 +14,7 @@ SERVICE_ACCOUNT_FILE = ''
 credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
-plugin = lightbulb.Plugin('warnings')
+plugin = lightbulb.Plugin('history')
 plugin.add_checks(
     lightbulb.checks.has_guild_permissions(hikari.Permissions.MODERATE_MEMBERS)
 )
@@ -28,7 +28,7 @@ async def history(ctx):
     resp = []
     response = ''
     username = await ctx.bot.rest.fetch_user(user_id)
-    title = "Warnings for " + str(username)
+    title = "Punishments for " + str(username)
     try:
         service = build('sheets', 'v4', credentials=credentials)
 
@@ -46,7 +46,7 @@ async def history(ctx):
         print(err)
 
     if not resp:
-        response = str(username) + " has not been warned."
+        response = str(username) + " has not been punished."
     else:
         for i in range(len(resp)):
             response += resp[i][0] +" - "+ resp[i][1] +" - "+ resp[i][4] + "\n"
