@@ -11,7 +11,7 @@ from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
 # The ID of a sample spreadsheet.
-MNET_SHEET = ''
+SHEET = ''
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 SERVICE_ACCOUNT_FILE = ''
 credentials = service_account.Credentials.from_service_account_file(
@@ -20,7 +20,7 @@ credentials = service_account.Credentials.from_service_account_file(
 plugin = lightbulb.Plugin('votecount')
 
 @plugin.command
-@lightbulb.add_checks(lightbulb.has_roles(1019199093484032011,960023057831952464,960023057831952464,mode=any))
+# @lightbulb.add_checks(lightbulb.has_roles(<roleID>,mode=any)) Uncomment to limit
 @lightbulb.command('votecount','Returns vote count info')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def votecount(ctx):
@@ -29,7 +29,7 @@ async def votecount(ctx):
         service = build('sheets', 'v4', credentials=credentials)
         # Call the Sheets API
         sheet = service.spreadsheets()
-        result = sheet.values().get(spreadsheetId=MNET_SHEET,
+        result = sheet.values().get(spreadsheetId=SHEET,
                                     range="Sheet1!C2:C").execute()
         values = result.get('values', [])
         for i in range(len(values)):

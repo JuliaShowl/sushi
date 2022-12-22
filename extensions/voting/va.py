@@ -11,9 +11,9 @@ from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
 # The ID of a sample spreadsheet.
-MNET_SHEET = '1zgAhBOdmGPTvp4N4AvaL0HqIXIKRh3GN4rDy-eTpOPo'
+SHEET = ''
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-SERVICE_ACCOUNT_FILE = './discord-bot-366601-efb7cc4855b5.json'
+SERVICE_ACCOUNT_FILE = ''
 credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
@@ -29,7 +29,7 @@ async def voteAccounts(user):
 
         # Call the Sheets API
         sheet = service.spreadsheets()
-        result = sheet.values().get(spreadsheetId=MNET_SHEET,
+        result = sheet.values().get(spreadsheetId=SHEET,
                                     range="Sheet1!A2:C").execute()
         values = result.get('values', [])
         for i in range(len(values)):
@@ -38,7 +38,7 @@ async def voteAccounts(user):
                 password = values[i][1]
                 rng = rng + str(i+2)
                 rng2 = rng2 + str(i+2)
-                sheet.values().update(spreadsheetId=MNET_SHEET,range=(rng+rng2),valueInputOption='USER_ENTERED',body={'majorDimension':'COLUMNS','values':[["Done"],[user]]}).execute()
+                sheet.values().update(spreadsheetId=SHEET,range=(rng+rng2),valueInputOption='USER_ENTERED',body={'majorDimension':'COLUMNS','values':[["Done"],[user]]}).execute()
                 return (username,password)
             if i == len(values) and values[i][2] == "Done":
                 return None
@@ -46,7 +46,7 @@ async def voteAccounts(user):
         print(err)
 
 @plugin.command
-@lightbulb.add_checks(lightbulb.has_roles(1035324118297481306,1019199093484032011,mode=any))
+# @lightbulb.add_checks(lightbulb.has_roles(<roleID>1,mode=any)) Uncomment to limit
 @lightbulb.add_cooldown(10.0,1,lightbulb.UserBucket)
 @lightbulb.option('count','How many accounts to get', type=int, default=1, max_value=3)
 @lightbulb.command('va','Get voting account info')

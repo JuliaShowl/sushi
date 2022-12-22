@@ -49,7 +49,7 @@ async def reset(ctx):
                     }
                 ],
         }
-        sheet.batchUpdate(spreadhSheetId=MNET_SHEET,body=requests).execute()
+        sheet.batchUpdate(spreadhSheetId=SHEET,body=requests).execute()
 
         await ctx.respond("Accounts reset!")
     except HttpError as err:
