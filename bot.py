@@ -36,5 +36,5 @@ async def on_error(event: lightbulb.CommandErrorEvent) -> None:
     else:
         raise exception
 
-bot.load_extensions_from('./extensions')
+bot.load_extensions_from("./extensions/", recursive=True)
 bot.run()
