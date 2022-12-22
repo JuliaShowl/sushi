@@ -29,7 +29,7 @@ async def warn(ctx: lightbulb.Context):
     user_id = ctx.options.user.replace('<','').replace('>','').replace('@','')
     username = await ctx.bot.rest.fetch_user(user_id)
 
-    dt = datetime.now(tz=pytz.timezone("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
+    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     try:
         service = build('sheets', 'v4', credentials=credentials)
 
