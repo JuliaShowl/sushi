@@ -33,6 +33,8 @@ async def on_error(event: lightbulb.CommandErrorEvent) -> None:
         await event.context.respond(f"This command is on cooldown. Retry in `{exception.retry_after:.2f}` seconds.",flags=hikari.MessageFlag.EPHEMERAL,)
     elif isinstance(exception, lightbulb.MissingRequiredRole):
         await event.context.respond(f"You do not have the required role.",flags=hikari.MessageFlag.EPHEMERAL)
+    elif isinstance(exception, lightbulb.MissingRequiredPermission):
+        await event.context.respond(f"You do not have the required permissions.",flags=hikari.MessageFlag.EPHEMERAL)
     else:
         raise exception
 
