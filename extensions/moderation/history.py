@@ -2,12 +2,11 @@ from tokenize import String
 from datetime import datetime, timedelta
 import lightbulb
 import hikari
-import pytz
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
-from pytz import timezone
+
 
 PUNISHMENTS = ''
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -16,10 +15,9 @@ credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
 plugin = lightbulb.Plugin('warnings')
-# Uncomment to limit
-# plugin.add_checks(
-#     lightbulb.checks.has_guild_permissions(lightbulb.has_roles(<roleID>,mode=any))
-# )
+plugin.add_checks(
+    lightbulb.checks.has_guild_permissions(hikari.Permissions.MODERATE_MEMBERS)
+)
 
 @plugin.command
 @lightbulb.option('user','User to get punishments for')

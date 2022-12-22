@@ -2,12 +2,10 @@ from tokenize import String
 from datetime import datetime, timedelta
 import lightbulb
 import hikari
-import pytz
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
-from pytz import timezone
 
 PUNISHMENTS = ''
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
