@@ -43,7 +43,7 @@ async def voteAccounts(user):
 @plugin.command
 # @lightbulb.add_checks(lightbulb.has_roles(<roleID>1,mode=any)) Uncomment to limit
 @lightbulb.add_cooldown(10.0,1,lightbulb.UserBucket)
-@lightbulb.option('count','How many accounts to get', type=int, default=1, max_value=3)
+@lightbulb.option('count','How many accounts to get', type=int, default=1, min_value=1, max_value=3)
 @lightbulb.command('va','Get voting account info')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def va(ctx):
