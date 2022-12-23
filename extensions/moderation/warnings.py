@@ -19,11 +19,11 @@ plugin.add_checks(
 )
 
 @plugin.command
-@lightbulb.option('user','Who are you warning')
-@lightbulb.option('reason','Why',type=str,required=False,default='Not specified')
-@lightbulb.command('warn','Warn a user for breaking a rule')
+@lightbulb.option('user','The user to warn')
+@lightbulb.option('reason','Reason for warning',type=str,required=False,default='Not specified')
+@lightbulb.command('warn','Warn a user for breaking a rule', auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def warn(ctx: lightbulb.Context):
+async def warn(ctx: lightbulb.Context, user: hikari.Member, reason: str):
     user_id = ctx.options.user.replace('<','').replace('>','').replace('@','')
     username = await ctx.bot.rest.fetch_user(user_id)
 
@@ -40,21 +40,22 @@ async def warn(ctx: lightbulb.Context):
 
         value_range_body = {
             "majorDimension": "COLUMNS",
-           'values': [[str(dt)] ,["Warning"], [str(username)], [str(user_id)], [str(ctx.options.reason)]]
+           'values': [[str(dt)] ,["Warning"], [str(username)], [str(user_id)], [str(reason)], [str(ctx.author)]]
         }
 
         sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
 
     except HttpError as err:
         print(err)
-    resp = f"{username} has been warned for `{ctx.options.reason}`"
+
+    resp = f"{username} has been warned for `{reason}`"
     await ctx.respond(resp)
 
 @plugin.command
-@lightbulb.option('user','Who are you warning')
+@lightbulb.option('user','User to remove warnings from')
 @lightbulb.command('clearwarnings','Remove all warnings from user')
 @lightbulb.implements(lightbulb.SlashCommand)
-async def clearwarnings(ctx):
+async def clearwarnings(ctx: lightbulb.Context, user: hikari.Member):
     user_id = ctx.options.user.replace('<','').replace('>','').replace('@','')
     username = await ctx.bot.rest.fetch_user(user_id)
 

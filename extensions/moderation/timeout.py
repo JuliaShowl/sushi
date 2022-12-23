@@ -18,18 +18,15 @@ plugin.add_checks(
     lightbulb.checks.has_guild_permissions(hikari.Permissions.MODERATE_MEMBERS),
     lightbulb.checks.bot_has_guild_permissions(hikari.Permissions.MODERATE_MEMBERS)
 )
-PERMISSIONS = (
-    hikari.Permissions.MODERATE_MEMBERS
-)
 
 @plugin.command()
-@lightbulb.option("reason", "the reason for the timeout", str, required=False,default='Not specified')
-@lightbulb.option("days", "the duration of the timeout (days)", int, required=False, default=0)
-@lightbulb.option("hour", "the duration of the timeout (hour)", int, required=False, default=0)
-@lightbulb.option("minute", "the duration of the timeout (minute)", int, required=False, default=0)
-@lightbulb.option("second", "the duration of the timeout (second)", int, required=False, default=0)
-@lightbulb.option("user", "the user you want to be put in timeout", required=True)
-@lightbulb.command("timeout", "Timeout a member", auto_defer = True, pass_options = True)
+@lightbulb.option("reason", "Reason for timeout", type=str, required=False,default='Not specified')
+@lightbulb.option("days", "Duration of the timeout (days)", type=int, required=False, default=0)
+@lightbulb.option("hour", "Duration of the timeout (hour)", type=int, required=False, default=0)
+@lightbulb.option("minute", "Dration of the timeout (minute)", type=int, required=False, default=0)
+@lightbulb.option("second", "Duration of the timeout (second)", type=int, required=False, default=0)
+@lightbulb.option("user", "The user to timeout", required=True)
+@lightbulb.command("timeout", "Timeout a user, will attempt to remove timeout from user if no duration is specified", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def timeout(ctx: lightbulb.Context, user: hikari.Member, second: int, minute: int, hour: int , days: int, reason: str):
     
@@ -61,7 +58,7 @@ async def timeout(ctx: lightbulb.Context, user: hikari.Member, second: int, minu
 
             value_range_body = {
                 "majorDimension": "COLUMNS",
-                'values': [[str(now.strftime("%Y-%m-%d %H:%M:%S"))] ,["Timeout"], [str(username)], [str(user_id)], [str(ctx.options.reason)], [str(then-now)]]
+                'values': [[str(now.strftime("%Y-%m-%d %H:%M:%S"))] ,["Timeout"], [str(username)], [str(user_id)], [str(ctx.options.reason)], [str(ctx.author)], [str(then-now)]]
             }
 
             sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
@@ -69,7 +66,7 @@ async def timeout(ctx: lightbulb.Context, user: hikari.Member, second: int, minu
         except HttpError as err:
             print(err)
     
-    await ctx.bot.rest.edit_member(user = user_id, guild = ctx.get_guild(), communication_disabled_until=then, reason=ctx.options.reason)
+    await ctx.bot.rest.edit_member(user = user_id, guild = ctx.get_guild(), communication_disabled_until=then, reason=reason)
     await ctx.edit_last_response(txt)
 
 def load(bot):
