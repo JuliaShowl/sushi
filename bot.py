@@ -9,14 +9,6 @@ bot = lightbulb.BotApp(token=TOKEN)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def ping(ctx):
     await ctx.respond('Pong!')
-  
-@bot.command
-@lightbulb.command('help','List comands')
-@lightbulb.implements(lightbulb.SlashCommand)
-async def help(ctx):
-    resp = "`sushi` - Returns a picture of Sushi, Mia's hamster\n`egg` - Returns a picture of Egg, Souris' cat\n`souris_plant` - Returns a picture of Souris' bonsai or some random Reddit plant\n`zimzalabim` - Are you ready for this?\n`pantomime` - Like a pantomime\n`solve <equation>` - Solves linear equations"
-    embed = hikari.Embed(title="SushiBot Help",description=resp, color='b0ffe3')
-    await ctx.respond(embed=embed)
 
 @bot.listen(lightbulb.CommandErrorEvent)
 async def on_error(event: lightbulb.CommandErrorEvent) -> None:
