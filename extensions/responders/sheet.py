@@ -117,7 +117,7 @@ async def add(ctx: lightbulb.Context, responder: str, image: str):
         await ctx.respond("Responder not recgonized")
         return
 
-    await ctx.respond("Added to bot!")
+    await ctx.respond(f"Added {image} to `{responder}`!")
 
 def load(bot):
     bot.add_plugin(plugin)
