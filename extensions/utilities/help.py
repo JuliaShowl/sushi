@@ -12,8 +12,9 @@ async def help(ctx):
     plant = "`/souris_plant` - Returns a picture of Souris' bonsai or some random Reddit plant\n"
     zim = "`/zimzalabim` - Are you ready for this?\n"
     pan = "`/pantomime` - Like a pantomime\n"
-    math = "`/solve <equation>` - Solves equations. Supports python's math library"
-    resp = f"{sushi}{egg}{plant}{zim}{pan}{math}"
+    math = "`/solve <equation>` - Solves equations. Supports python's math library\n"
+    yoink = "`/yoihnk <emote>` - Grabs custom emote\n"
+    resp = f"{sushi}{egg}{plant}{zim}{pan}{math}{yoink}"
     embed = hikari.Embed(title="SushiBot Help",description=resp, color='b0ffe3')
     await ctx.respond(embed=embed)
 def load(bot):
