@@ -1,5 +1,5 @@
 from tokenize import String
-from datetime import datetime, timedelta
+from datetime import datetime
 import lightbulb
 import hikari
 

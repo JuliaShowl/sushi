@@ -1,7 +1,5 @@
 from tokenize import String
 import lightbulb
-import hikari
-import random
 import math
 
 plugin = lightbulb.Plugin('misc')
