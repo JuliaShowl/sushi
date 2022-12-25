@@ -1,6 +1,7 @@
 from tokenize import String
 import lightbulb
 import random
+import hikari
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -61,10 +62,27 @@ async def souris_plant(ctx):
         await ctx.respond(values[i][0])
     except HttpError as err:
         print(err)
+
+@plugin.command
+@lightbulb.command('munchie','Returns a picture of Munchie')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def munchie(ctx):
+    try: 
+        service = build('sheets', 'v4', credentials=credentials)
+        # Call the Sheets API
+        sheet = service.spreadsheets()
+        result = sheet.values().get(spreadsheetId=SUSHI,
+                                    range="Sheet4!A:A").execute()
+        values = result.get('values', [])
+        i = random.randrange(0,len(values))
+        await ctx.respond(values[i][0])
+    except HttpError as err:
+        print(err)
     
 @plugin.command
+@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES))
 @lightbulb.option("media","Media to be added", type=str, required=True)
-@lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant"])
+@lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant","munchie"])
 @lightbulb.command("add", "Add media to database", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def add(ctx: lightbulb.Context, responder: str, media: str):
@@ -98,6 +116,11 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
             sheet.values().append(spreadsheetId=SUSHI, range="Sheet3!A:A", valueInputOption=value_input_option, body=value_range_body).execute()
         except HttpError as err:
             print(err)
+    elif(responder == "munchie"):
+        try:
+            sheet.values().append(spreadsheetId=SUSHI, range="Sheet4!A:A", valueInputOption=value_input_option, body=value_range_body).execute()
+        except HttpError as err:
+            print(err)
     else:
         await ctx.respond("Responder not recgonized")
         return
@@ -105,6 +128,7 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
     await ctx.respond(f"Added {media} to `{responder}`!")
 
 @plugin.command
+@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES))
 @lightbulb.option("media","Media to be removed", type=str, required=True)
 @lightbulb.command("remove", "Remove media from database", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
@@ -181,10 +205,33 @@ async def add(ctx: lightbulb.Context, media: str):
                 sheet.batchUpdate(spreadsheetId=SUSHI,body=request_body).execute()
                 await ctx.respond(f"Removed {media} to from database!")
                 return
+
+        result = sheet.values().get(spreadsheetId=SUSHI,
+                                    range="Sheet4!A:A").execute()
+        values = result.get('values', [])
+
+        for i in range(len(values)):
+            if(values[i][0] == media):
+                request_body = {
+                    "requests":[{
+                            "deleteDimension": {
+                                "range": {
+                                "sheetId": '269933147',
+                                "dimension": "ROWS",
+                                "startIndex": i,
+                                "endIndex": i+1
+                                }
+                            }
+                        }]
+                }  
+                sheet.batchUpdate(spreadsheetId=SUSHI,body=request_body).execute()
+                await ctx.respond(f"Removed {media} to from database!")
+                return
     except HttpError as err:
         print(err)
 
     await ctx.respond(f"Unable to find media")
+
 
 def load(bot):
     bot.add_plugin(plugin)
