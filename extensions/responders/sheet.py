@@ -63,7 +63,6 @@ async def souris_plant(ctx):
         print(err)
     
 @plugin.command
-@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES))
 @lightbulb.option("media","Media to be added", type=str, required=True)
 @lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant"])
 @lightbulb.command("add", "Add media to database", auto_defer=True, pass_options=True)
@@ -106,7 +105,6 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
     await ctx.respond(f"Added {media} to `{responder}`!")
 
 @plugin.command
-@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES))
 @lightbulb.option("media","Media to be removed", type=str, required=True)
 @lightbulb.command("remove", "Remove media from database", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
