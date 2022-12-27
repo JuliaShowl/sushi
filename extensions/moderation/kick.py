@@ -2,6 +2,7 @@ from tokenize import String
 from datetime import datetime
 import lightbulb
 import hikari
+import pytz
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -22,14 +23,12 @@ plugin.add_checks(
 
 @plugin.command()
 @lightbulb.option("reason", "Reason for kicking member", type=str, required=False, default="Not specified")
-@lightbulb.option("user", "User you want to kick", required=True)
+@lightbulb.option("user", "User you want to kick", type=hikari.User,required=True)
 @lightbulb.command("kick", "Kick a user", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
-async def ban(ctx: lightbulb.Context, user: hikari.Member, reason: str):
-    user_id = ctx.options.user.replace('<','').replace('>','').replace('@','')
-    username = await ctx.bot.rest.fetch_user(user_id)
-    await ctx.bot.rest.kick_member(user = user_id, guild = ctx.get_guild(), reason = reason)
-    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+async def ban(ctx: lightbulb.Context, user: hikari.User, reason: str):
+    await ctx.bot.rest.kick_member(user = user.id, guild = ctx.get_guild(), reason = reason)
+    dt = datetime.now(tz=pytz.timezone("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
     try:
         service = build('sheets', 'v4', credentials=credentials)
 
@@ -42,7 +41,7 @@ async def ban(ctx: lightbulb.Context, user: hikari.Member, reason: str):
 
         value_range_body = {
             "majorDimension": "COLUMNS",
-           'values': [[str(dt)] ,["Kick"], [str(username)], [str(user_id)], [str(reason)], [str(ctx.author)]]
+           'values': [[str(dt)] ,["Kick"], [str(user)], [str(user.id)], [str(reason)], [str(ctx.author)]]
         }
 
         sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
@@ -50,7 +49,7 @@ async def ban(ctx: lightbulb.Context, user: hikari.Member, reason: str):
     except HttpError as err:
         print(err)
 
-    await ctx.respond(f"{username} has been kicked for `{reason}`")
+    await ctx.respond(f"{user} has been kicked for `{reason}`")
     
 
 def load(bot):

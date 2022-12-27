@@ -18,15 +18,13 @@ plugin.add_checks(
 )
 
 @plugin.command
-@lightbulb.option('user','User to get punishments for')
-@lightbulb.command('history','See all user\'s punishments', auto_defer=True, pass_options=True)
+@lightbulb.option('user','User to get punishments for',type=hikari.User)
+@lightbulb.command('history','See all user\'s punishments', aliases=["ph","punishments"],auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def history(ctx: lightbulb.Context, user: hikari.Member):
-    user_id = ctx.options.user.replace('<','').replace('>','').replace('@','')
+async def history(ctx: lightbulb.Context, user: hikari.User):
     resp = []
     response = ''
-    username = await ctx.bot.rest.fetch_user(user_id)
-    title = "Punishments for " + str(username)
+    title = "Punishments for " + str(user)
     try:
         service = build('sheets', 'v4', credentials=credentials)
 
@@ -37,14 +35,14 @@ async def history(ctx: lightbulb.Context, user: hikari.Member):
                                     range="Sheet1!A2:G").execute()
         values = result.get('values', [])
         for i in range(len(values)):
-            if values[i][3] == user_id:
+            if values[i][3] == str(user.id):
                 resp.append(values[i])
 
     except HttpError as err:
         print(err)
 
     if not resp:
-        response = str(username) + " has not been punsihed."
+        response = str(user) + " has not been punsihed."
     else:
         for i in range(len(resp)):
             if(len(resp[i]) == 7):

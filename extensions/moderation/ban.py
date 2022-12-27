@@ -2,6 +2,7 @@ from tokenize import String
 from datetime import datetime
 import lightbulb
 import hikari
+import pytz
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -23,16 +24,14 @@ plugin.add_checks(
 @plugin.command()
 @lightbulb.option("reason", "Reason for banning member", type=str, required=False, default="Not specified")
 @lightbulb.option("delete_message", "Delete the messages after the ban? (up to 7 days, leave empty or set to 0 to not delete)", type=int, min_value = 0, max_value = 7, default = 0 ,required=False)
-@lightbulb.option("user", "User you want to ban", required=True)
+@lightbulb.option("user", "User you want to ban", type=hikari.User,required=True)
 @lightbulb.command("ban", "Ban a user", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
-async def ban(ctx: lightbulb.Context, user: hikari.Member, delete_message: int, reason: str):
-    user_id = ctx.options.user.replace('<','').replace('>','').replace('@','')
-    username = await ctx.bot.rest.fetch_user(user_id)
+async def ban(ctx: lightbulb.Context, user: hikari.User, delete_message: int, reason: str):
     delete = delete_message or 0
-    await ctx.respond(f"Banning **{username}**")
-    await ctx.bot.rest.ban_member(user = user_id, guild = ctx.get_guild(), reason = reason, delete_message_days=delete)
-    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    await ctx.respond(f"Banning **{user}**")
+    await ctx.bot.rest.ban_member(user = user.id, guild = ctx.get_guild(), reason = reason, delete_message_days=delete)
+    dt = datetime.now(tz=pytz.timezone("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
     try:
         service = build('sheets', 'v4', credentials=credentials)
 
@@ -45,7 +44,7 @@ async def ban(ctx: lightbulb.Context, user: hikari.Member, delete_message: int, 
 
         value_range_body = {
             "majorDimension": "COLUMNS",
-           'values': [[str(dt)] ,["Ban"], [str(username)], [str(user_id)], [str(reason)], [str(ctx.author)]]
+           'values': [[str(dt)] ,["Ban"], [str(user)], [str(user.id)], [str(reason)], [str(ctx.author)]]
         }
 
         sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
@@ -53,18 +52,18 @@ async def ban(ctx: lightbulb.Context, user: hikari.Member, delete_message: int, 
     except HttpError as err:
         print(err)
 
-    await ctx.edit_last_response(f"{username} has been banned for `{reason}`")
+    await ctx.edit_last_response(f"{user} has been banned for `{reason}`")
     
 @plugin.command()
 @lightbulb.option("reason", "Reason for unban", type=str, required=False, default="Not specified")
-@lightbulb.option("user", "the user you want to unban (Please use their user ID)", hikari.Snowflake, required=True)
+@lightbulb.option("user", "the user you want to unban (Please use their user ID)", type=hikari.Snowflake, required=True)
 @lightbulb.command("unban", "Unban a user", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def unban(ctx: lightbulb.Context, user: hikari.Snowflake, reason: str):
     username = await ctx.bot.rest.fetch_user(user)
     await ctx.respond(f"Unbanning **{username}**")
     await ctx.bot.rest.unban_member(user = user, guild = ctx.get_guild(), reason = reason)
-    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    dt = datetime.now(tz=pytz.timezone("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
     try:
         service = build('sheets', 'v4', credentials=credentials)
 
