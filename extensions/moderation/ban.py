@@ -31,7 +31,7 @@ async def ban(ctx: lightbulb.Context, user: hikari.User, delete_message: int, re
     delete = delete_message or 0
     await ctx.respond(f"Banning **{user}**")
     await ctx.bot.rest.ban_member(user = user.id, guild = ctx.get_guild(), reason = reason, delete_message_days=delete)
-    dt = datetime.now(tz=pytz.timezone("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
+    dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
     try:
         service = build('sheets', 'v4', credentials=credentials)
 
@@ -63,7 +63,7 @@ async def unban(ctx: lightbulb.Context, user: hikari.Snowflake, reason: str):
     username = await ctx.bot.rest.fetch_user(user)
     await ctx.respond(f"Unbanning **{username}**")
     await ctx.bot.rest.unban_member(user = user, guild = ctx.get_guild(), reason = reason)
-    dt = datetime.now(tz=pytz.timezone("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
+    dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
     try:
         service = build('sheets', 'v4', credentials=credentials)
 

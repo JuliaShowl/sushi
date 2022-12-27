@@ -25,7 +25,7 @@ plugin.add_checks(
 @lightbulb.command('warn','Warn a user for breaking a rule', auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def warn(ctx: lightbulb.Context, user: hikari.User, reason: str):
-    dt = datetime.now(tz=pytz.timezone("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
+    dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
     try:
         service = build('sheets', 'v4', credentials=credentials)
 

@@ -30,7 +30,7 @@ plugin.add_checks(
 @lightbulb.command("timeout", "Timeout a user, will attempt to remove timeout from user if no duration is specified", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def timeout(ctx: lightbulb.Context, user: hikari.User, second: int, minute: int, hour: int , days: int, reason: str):
-    now = datetime.now(tz=pytz.timezone("Asia/Seoul"))
+    now = datetime.now(tz=pytz.UTC)
     then = now + timedelta(days=days, hours=hour, minutes=minute, seconds=second)
     
     if (then - now).days > 28:

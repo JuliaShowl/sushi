@@ -14,7 +14,7 @@ async def modhelp(ctx):
     timeout = "`/timeout <@user> <reason|optional> <days|optional> <hours|optional> <minutes|optional> <seconds|optional>` - Times out user for given duration. If no duration is specified, will attempt to remove timeout from user\n"
     kick = "`/kick <@user> <reason|optional>` - Kicks user\n"
     bans = "`/ban <@user> <reason|optional>` - Bans user\n`/unban <userID> <reason|optional>` - Unbans user\n`/banlist` - Lists all mebmers banned from server\n"
-    history = "`/history <@user>` - Gets punishment history for user. `Timestamp local to copmuter running bot - Type - Reason - Duration - Punisher`\n"
+    history = "`/history <@user>` - Gets punishment history for user. `Timestamp in UTC - Type - Reason - Duration - Punisher`\n"
     resp = f"**Warnings**\n{warnings}\n**Timeout**\n{timeout}\n**Kick**\n{kick}\n**Bans**\n{bans}\n**History**\n{history}\n"
     embed = hikari.Embed(title="SushiBot Moderation Help",description=resp, color='b0ffe3')
     await ctx.respond(embed=embed)
