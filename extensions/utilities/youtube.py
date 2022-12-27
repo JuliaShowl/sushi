@@ -91,7 +91,7 @@ async def yt_stats(ctx: lightbulb.Context, query: str):
     comments = int(response[0]['statistics']['commentCount'])
     comments = str("{:,}".format(comments))
     resp = f'https://youtube.com/watch?v={video}\n\n**Views:** {views}\n**Likes:** {likes}\n**Comments:** {comments}'
-    embed = hikari.Embed(title=f'View count for {title}', description=resp)
+    embed = hikari.Embed(title=f'Video statistics for {title}', description=resp)
     embed.set_thumbnail(thumbnail)
     await ctx.respond(embed=embed)
 
