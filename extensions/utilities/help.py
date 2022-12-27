@@ -19,7 +19,8 @@ async def help(ctx):
     meme = "`/meme` - Gets random reddit meme"
     yoink = "`/yoihnk <emote>` - Grabs custom emote\n"
     yt = "`/yt <query>` - Search for YouTube videos.\n"
-    resp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{add}{remove}\n**Misc Responders**\n{math}{meme}\n**Utilities**\n{yoink}{yt}"
+    yt_stats = "`/yt_stats <query>` - Get statistics for a YouTube video.\n"
+    resp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{add}{remove}\n**Misc Responders**\n{math}{meme}\n**Utilities**\n{yoink}{yt}{yt_stats}"
     embed = hikari.Embed(title="SushiBot Help",description=resp, color='b0ffe3')
     await ctx.respond(embed=embed)
 def load(bot):
