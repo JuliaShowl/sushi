@@ -100,9 +100,12 @@ async def yt_stats(ctx: lightbulb.Context, query: str):
         titles[i] = titles[i].replace("&quot;", "\"")
         resp = {'title': titles[i]}
         thumbnails.append(response[i][0]['snippet']['thumbnails']['default']['url'])
-        views.append(response[i][0]['statistics']['viewCount'])
-        likes.append(response[i][0]['statistics']['likeCount'])
-        comments.append(response[i][0]['statistics']['commentCount'])
+        views.append(int(response[i][0]['statistics']['viewCount']))
+        views[i] = str("{:,}".format(views[i]))
+        likes.append(int(response[i][0]['statistics']['likeCount']))
+        likes[i] = str("{:,}".format(likes[i]))
+        comments.append(int(response[i][0]['statistics']['commentCount']))
+        comments[i] = str("{:,}".format(comments[i]))
         stats = f'https://youtube.com/watch?v={videos[i]}\n\n**Views:** {views[i]}\n**Likes:** {likes[i]}\n**Comments:** {comments[i]}'
         resp.update({'content': stats})
         resp.update({'thumbnail': thumbnails[i]})
