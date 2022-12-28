@@ -16,16 +16,17 @@ plugin = lightbulb.Plugin('youtube')
 
 @plugin.command
 @lightbulb.option("query", "Query to search", type=str, required=True)
+@lightbulb.option("count", "Number of queries to retreive", type=int, required=False, min_value=1, max_value=50, default=10)
 @lightbulb.command("yt", "Search for YouTube videos", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def yt(ctx: lightbulb.Context, query: str):
+async def yt(ctx: lightbulb.Context, query: str, count:int):
     youtube = build('youtube', 'v3', credentials=credentials)
 
     response = youtube.search().list(
         q=query,
         part='id',
         type='video',
-        maxResults=50
+        maxResults=count
     ).execute()
 
     if not response.get('items'):
@@ -39,25 +40,26 @@ async def yt(ctx: lightbulb.Context, query: str):
     for search_result in response.get('items', []):
         videos.append(search_result['id']['videoId'])
 
-    paginated_help = pag.StringPaginator()
+    paginated = pag.StringPaginator()
     for l in range(len(videos)):
-        paginated_help.add_line(f"https://youtube.com/watch?v={videos[l]}")
-        paginated_help.new_page()
-    navigator = nav.ReactionNavigator(paginated_help.build_pages())
+        paginated.add_line(f"https://youtube.com/watch?v={videos[l]}")
+        paginated.new_page()
+    navigator = nav.ReactionNavigator(paginated.build_pages())
     await navigator.run(ctx)
 
 @plugin.command
 @lightbulb.option("query", "Query to search", type=str, required=True)
+@lightbulb.option("count", "Number of queries to retreive", type=int, required=False, min_value=1, max_value=25, default=5)
 @lightbulb.command("yt_stats", "Get statistics for a certain YouTube video", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def yt_stats(ctx: lightbulb.Context, query: str):
+async def yt_stats(ctx: lightbulb.Context, query: str, count: int):
     youtube = build('youtube', 'v3', credentials=credentials)
 
     response = youtube.search().list(
         q=query,
         part='id,snippet',
         type='video',
-        maxResults=5
+        maxResults=count
     ).execute()
 
     if not response.get('items'):
@@ -88,8 +90,6 @@ async def yt_stats(ctx: lightbulb.Context, query: str):
     paginated = pag.EmbedPaginator()
     @paginated.embed_factory()
     def build_embed(page_index, page_content):
-            # embed = hikari.Embed(title=page_content[0], description=page_content[1])
-            # embed.set_thumbnail(page_content[2])
             page_content = eval(page_content)
             embed = hikari.Embed(title = page_content.get('title'), description= page_content.get('content'))
             embed.set_thumbnail(page_content.get('thumbnail'))
