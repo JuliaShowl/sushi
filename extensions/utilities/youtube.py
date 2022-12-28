@@ -57,43 +57,60 @@ async def yt_stats(ctx: lightbulb.Context, query: str):
         q=query,
         part='id,snippet',
         type='video',
-        maxResults=1
+        maxResults=5
     ).execute()
 
     if not response.get('items'):
         await ctx.respond("No results found")
         return
 
-    video = ''
-    title = ''
+    videos = []
+    titles = []
+    views = []
+    likes = []
+    comments = []
+    thumbnails = []
 
     # Add each result to the appropriate list, and then display the lists of
     # matching videos, channels, and playlists.
-    video = response.get('items', [])
-    video = video[0]['id']['videoId']
-    
-    response = youtube.videos().list(
-        id=video,
-        part='snippet,statistics'
-    ).execute()
+    for search_result in response.get('items', []):
+        videos.append(search_result['id']['videoId'])
 
-    if not response.get('items'):
+    response = []
+    for i in range(len(videos)):  
+        responses = youtube.videos().list(id=videos[i],part='snippet,statistics').execute()  
+        response.append(responses.get('items', []))
+
+    if not response:
         await ctx.respond("No results found")
         return
-    response = response.get('items', [])
-    title = response[0]['snippet']['title']
-    title = title.replace("&quot;", "\"")
-    thumbnail = response[0]['snippet']['thumbnails']['default']['url']
-    views = int(response[0]['statistics']['viewCount'])
-    views = str("{:,}".format(views))
-    likes = int(response[0]['statistics']['likeCount'])
-    likes = str("{:,}".format(likes))
-    comments = int(response[0]['statistics']['commentCount'])
-    comments = str("{:,}".format(comments))
-    resp = f'https://youtube.com/watch?v={video}\n\n**Views:** {views}\n**Likes:** {likes}\n**Comments:** {comments}'
-    embed = hikari.Embed(title=f'Video statistics for {title}', description=resp)
-    embed.set_thumbnail(thumbnail)
-    await ctx.respond(embed=embed)
+
+    paginated = pag.EmbedPaginator()
+    @paginated.embed_factory()
+    def build_embed(page_index, page_content):
+            # embed = hikari.Embed(title=page_content[0], description=page_content[1])
+            # embed.set_thumbnail(page_content[2])
+            page_content = eval(page_content)
+            embed = hikari.Embed(title = page_content.get('title'), description= page_content.get('content'))
+            embed.set_thumbnail(page_content.get('thumbnail'))
+            return embed
+
+    for i in range(len(response)):
+        titles.append(response[i][0]['snippet']['title'])
+        titles[i] = titles[i].replace("&quot;", "\"")
+        resp = {'title': titles[i]}
+        thumbnails.append(response[i][0]['snippet']['thumbnails']['default']['url'])
+        views.append(response[i][0]['statistics']['viewCount'])
+        likes.append(response[i][0]['statistics']['likeCount'])
+        comments.append(response[i][0]['statistics']['commentCount'])
+        stats = f'https://youtube.com/watch?v={videos[i]}\n\n**Views:** {views[i]}\n**Likes:** {likes[i]}\n**Comments:** {comments[i]}'
+        resp.update({'content': stats})
+        resp.update({'thumbnail': thumbnails[i]})
+        paginated.add_line(resp)
+        paginated.new_page()
+    
+    navigator = nav.ButtonNavigator(paginated.build_pages())
+    await navigator.run(ctx)
 
 def load(bot):
     bot.add_plugin(plugin)
