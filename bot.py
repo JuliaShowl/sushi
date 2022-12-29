@@ -20,13 +20,17 @@ async def on_error(event: lightbulb.CommandErrorEvent) -> None:
     exception = event.exception.__cause__ or event.exception
 
     if isinstance(exception, lightbulb.NotOwner):
-        await event.context.respond("You are not the owner of this bot.")
+        await event.context.respond("Only the owner of the bot can use that command.")
     elif isinstance(exception, lightbulb.CommandIsOnCooldown):
-        await event.context.respond(f"This command is on cooldown. Retry in `{exception.retry_after:.2f}` seconds.",flags=hikari.MessageFlag.EPHEMERAL,)
+        await event.context.respond(f"This command is on cooldown. Retry in `{exception.retry_after}` seconds.")
     elif isinstance(exception, lightbulb.MissingRequiredRole):
-        await event.context.respond(f"You do not have the required role.",flags=hikari.MessageFlag.EPHEMERAL)
+        await event.context.respond(f"You do not have the required role(s), `{exception.missing_roles}`.")
     elif isinstance(exception, lightbulb.MissingRequiredPermission):
-        await event.context.respond(f"You do not have the required permissions.",flags=hikari.MessageFlag.EPHEMERAL)
+        await event.context.respond(f"You do not have the required permission(s), `{exception.missing_perms}`.")
+    elif isinstance(exception, lightbulb.BotMissingRequiredPermission):
+        await event.context.respond(f"This bot does not have the required permission(s), `{exception.missing_perms}`.")
+    elif isinstance(exception, lightbulb.OnlyInGuild):
+        await event.context.respond("This command can only be used in servers.")
     else:
         raise exception
 
