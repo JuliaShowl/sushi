@@ -42,7 +42,7 @@ async def history(ctx: lightbulb.Context, user: hikari.User):
         print(err)
 
     if not resp:
-        response = str(user) + " has not been punsihed."
+        response = str(user) + " has not been punished."
     else:
         for i in range(len(resp)):
             if(len(resp[i]) == 7):
