@@ -40,9 +40,14 @@ async def timeout(ctx: lightbulb.Context, user: hikari.User, second: int, minute
     if days == 0 and hour == 0 and minute == 0 and second == 0:
         await ctx.respond(f"Removing timeout from **{user}**")
         txt = f"Timeout for {user} has been removed successfully!"
+        await ctx.bot.rest.edit_member(user = user.id, guild = ctx.get_guild(), communication_disabled_until=then, reason=reason)
+        await ctx.edit_last_response(txt)
+        return
+
     else:
         await ctx.respond(f"Attempting to timeout **{user}**")
         txt = f"{user} has been timed out until <t:{int(then.timestamp())}:R> for `{ctx.options.reason}`"
+        await ctx.bot.rest.edit_member(user = user.id, guild = ctx.get_guild(), communication_disabled_until=then, reason=reason)
         try:
             service = build('sheets', 'v4', credentials=credentials)
 
@@ -62,9 +67,7 @@ async def timeout(ctx: lightbulb.Context, user: hikari.User, second: int, minute
 
         except HttpError as err:
             print(err)
-    
-    await ctx.bot.rest.edit_member(user = user.id, guild = ctx.get_guild(), communication_disabled_until=then, reason=reason)
-    await ctx.edit_last_response(txt)
+        await ctx.edit_last_response(txt)
 
 def load(bot):
     bot.add_plugin(plugin)
