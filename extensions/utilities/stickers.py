@@ -15,7 +15,6 @@ plugin.add_checks(
 async def steal(ctx: lightbulb.Context, target: hikari.Message):
     sticker = target.stickers
     embd = ""
-    image = ""
 
     if not sticker:
         await ctx.respond(":x: No custom sticker could be found on that message...")
@@ -23,10 +22,13 @@ async def steal(ctx: lightbulb.Context, target: hikari.Message):
 
     id = sticker[0].id
     embd = f"https://cdn.discordapp.com/stickers/{id}.png"
-    image = f"https://cdn.discordapp.com/stickers/{id}.png"
 
-    embed = hikari.Embed(description=embd)
-    embed.set_image(image)
+    if str(sticker[0].format_type) == "APNG":
+        embed = hikari.Embed(description=f"{embd}\n\nPaste URL into https://ezgif.com/apng-to-gif to convert to a GIF")
+    else:
+        embed = hikari.Embed(description=embd)
+    embed.set_image(embd)
+    
     await ctx.respond(embed=embed)
         
 def load(bot):
