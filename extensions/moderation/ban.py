@@ -23,7 +23,7 @@ plugin.add_checks(
 
 @plugin.command()
 @lightbulb.option("reason", "Reason for banning member", type=str, required=False, default="Not specified")
-@lightbulb.option("delete_message", "Delete the messages after the ban? (up to 7 days, leave empty or set to 0 to not delete)", type=int, min_value = 0, max_value = 7, default = 0 ,required=False)
+@lightbulb.option("delete_message", "Delete the messages after the ban? (time in seconds between 0 and 604800 (7 days))", type=int, min_value = 0, max_value = 7, default = 0 ,required=False)
 @lightbulb.option("user", "User you want to ban", type=hikari.User,required=True)
 @lightbulb.command("ban", "Ban a user", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
