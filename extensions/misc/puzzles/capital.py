@@ -46,9 +46,9 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
             if view.answer == answer:
                 await ctx.respond(f"{answer} is the correct answer!")
             else:
-                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}")
+                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
         else:
-            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}")
+            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
 
 def load(bot):
     bot.add_plugin(plugin)
