@@ -4,7 +4,7 @@ import lightbulb
 import miru
 import random
 
-plugin = lightbulb.Plugin("sudoku")
+plugin = lightbulb.Plugin("trivia")
 plugin.add_checks(
     lightbulb.guild_only
 )
@@ -29,11 +29,11 @@ async def sudoku(ctx: lightbulb.Context, count: int, category: str, difficulty: 
     if category is None and difficulty is None:
         response = requests.get(f"https://the-trivia-api.com/api/questions?limit={count}")
     elif category is not None and difficulty is None:
-        response = requests.get(f"https://the-trivia-api.com/api/questions?category={category}&limit={count}")
+        response = requests.get(f"https://the-trivia-api.com/api/questions?categories={category}&limit={count}")
     elif category is None and difficulty is not None:
         response = requests.get(f"https://the-trivia-api.com/api/questions?diffculty={difficulty}&limit={count}")
     else:
-        response = requests.get(f"https://the-trivia-api.com/api/questions?diffculty={difficulty}&category={category}&limit={count}")
+        response = requests.get(f"https://the-trivia-api.com/api/questions?diffculty={difficulty}&categories={category}&limit={count}")
     quiz = response.json()
     for i in range(count):
         answer = quiz[i]["correctAnswer"]
