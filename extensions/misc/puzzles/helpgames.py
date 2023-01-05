@@ -8,7 +8,8 @@ plugin = lightbulb.Plugin('helpgames')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def help(ctx):
     fq = "`/fq <count|optional> <options|optional>` - Guess the flag\n"
-    resp = f"**Games**\n{fq}"
+    cq = "`/cq <count|optional> <options|optional>` - Guess the capital\n"
+    resp = f"**Games**\n{fq}{cq}"
     embed = hikari.Embed(title="SushiBot Help",description=resp, color='b0ffe3')
     await ctx.respond(embed=embed)
 def load(bot):
