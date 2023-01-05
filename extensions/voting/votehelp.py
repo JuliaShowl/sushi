@@ -11,7 +11,7 @@ plugin = lightbulb.Plugin('votehelp')
 @lightbulb.command('votehelp','List voting commands')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def votehelp(ctx):
-    va = "`/va <count|optional>` - Gets voting account info. Default 1, Min 1, Max 3.\n"
+    va = "`/va <count|optional>` - Gets voting account info.\n"
     votecount = "`/votecount` - Gets account totals.\n"
     reset = "`/reset` - Resets voting accounts.\n"
     resp = f"{va}{votecount}{reset}"

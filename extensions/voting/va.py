@@ -43,7 +43,7 @@ async def voteAccounts(user):
 @plugin.command
 # @lightbulb.add_checks(lightbulb.has_roles(<roleID>1,mode=any)) Uncomment to limit
 @lightbulb.add_cooldown(10.0,1,lightbulb.UserBucket)
-@lightbulb.option('count','How many accounts to get', type=int, default=1, min_value=1, max_value=3)
+@lightbulb.option('count','How many accounts to get. (1-3) Default 1', type=int, default=1, min_value=1, max_value=3)
 @lightbulb.command('va','Get voting account info')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def va(ctx):
@@ -52,7 +52,7 @@ async def va(ctx):
     for i in range(ctx.options.count):
         task = (await voteAccounts(user))
         if task is None:
-            await ctx.respond("All accounts have been used. Please use `/ga` to create more!")
+            await ctx.respond("All accounts have been used.")
             if resp:
                 await ctx.respond(resp,flags=hikari.MessageFlag.EPHEMERAL,delete_after=5)
             else:
