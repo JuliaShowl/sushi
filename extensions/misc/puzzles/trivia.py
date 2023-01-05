@@ -52,8 +52,7 @@ async def sudoku(ctx: lightbulb.Context, count: int, category: str, difficulty: 
         new_list = random.sample(answers, 4)
         for j in new_list:
             view.add_item(j)
-        embed = hikari.Embed(title=question)
-        message = await ctx.respond(embed=embed, components=view)
+        message = await ctx.respond(f"**{question}**", components=view)
 
         await view.start(message)  # Start listening for interactions
 
