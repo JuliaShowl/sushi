@@ -18,6 +18,7 @@ class optButtons(miru.Button):
     async def callback(self, ctx: miru.ViewContext) -> None:
         if ctx.user.id == self.author:
             self.view.answer = self.choice
+            self.disabled = True
             self.view.stop()
         else:
             await ctx.respond("You did not generate this question", flags=hikari.MessageFlag.EPHEMERAL)
