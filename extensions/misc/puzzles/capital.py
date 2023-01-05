@@ -11,13 +11,17 @@ plugin.add_checks(
 
 class optButtons(miru.Button):
     # Let's leave our arguments dynamic this time, instead of hard-coding them
-    def __init__(self, choice, *args, **kwargs) -> None:
+    def __init__(self, choice, author, *args, **kwargs) -> None:
         self.choice = choice
+        self.author = author
         super().__init__(*args, **kwargs)
 
     async def callback(self, ctx: miru.ViewContext) -> None:
-        self.view.answer = self.choice
-        self.view.stop()
+        if ctx.user.id == self.author:
+            self.view.answer = self.choice
+            self.view.stop()
+        else:
+            await ctx.respond("You did not generate this question", flags=hikari.MessageFlag.EPHEMERAL)
 
 @plugin.command
 @lightbulb.option("count", "Number of quizzes to generate (1-20) Default 1", type=int, min_value=1, max_value=20,default=1, required=False)
@@ -33,7 +37,7 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
         country = quiz["country"]
         view = miru.View(timeout=60)  # Create a new view
         for j in range(options):
-            view.add_item(optButtons(quiz["variants"][j], style=hikari.ButtonStyle.PRIMARY, label=quiz["variants"][j]))
+            view.add_item(optButtons(quiz["variants"][j], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz["variants"][j]))
         embed = hikari.Embed(title=f"Guess the capital of {country}")
         embed.set_image(flag)
         message = await ctx.respond(embed=embed, components=view)
@@ -50,13 +54,14 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
         else:
             await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
     else:
+        score = 0
         for i in range(count):
             answer = quiz[i]["answer"]
             flag = quiz[i]["flag"]
             country = quiz[i]["country"]
             view = miru.View(timeout=60)  # Create a new view
             for j in range(options):
-                view.add_item(optButtons(quiz[i]["variants"][j], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["variants"][j]))
+                view.add_item(optButtons(quiz[i]["variants"][j], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["variants"][j]))
             embed = hikari.Embed(title=f"Guess the capital of {country}")
             embed.set_image(flag)
             message = await ctx.respond(embed=embed, components=view)
@@ -67,6 +72,7 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
 
             if hasattr(view, "answer"):  # Check if there is an answer
                 if view.answer == answer:
+                    score += 1
                     await ctx.respond(f"{answer} is the correct answer!")
                 else:
                     await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")

@@ -11,13 +11,17 @@ plugin.add_checks(
 
 class optButtons(miru.Button):
     # Let's leave our arguments dynamic this time, instead of hard-coding them
-    def __init__(self, choice, *args, **kwargs) -> None:
+    def __init__(self, choice, author, *args, **kwargs) -> None:
         self.choice = choice
+        self.author = author
         super().__init__(*args, **kwargs)
 
     async def callback(self, ctx: miru.ViewContext) -> None:
-        self.view.answer = self.choice
-        self.view.stop()
+        if ctx.user.id == self.author:
+            self.view.answer = self.choice
+            self.view.stop()
+        else:
+            await ctx.respond("You did not generate this question", flags=hikari.MessageFlag.EPHEMERAL)
 
 @plugin.command()
 @lightbulb.option("count", "Number of quizzes to generate (1-20) Default 1", type=int, min_value=1, max_value=20,default=1,required=False)
@@ -35,14 +39,15 @@ async def sudoku(ctx: lightbulb.Context, count: int, category: str, difficulty: 
     else:
         response = requests.get(f"https://the-trivia-api.com/api/questions?diffculty={difficulty}&categories={category}&limit={count}")
     quiz = response.json()
+    score = 0
     for i in range(count):
         answer = quiz[i]["correctAnswer"]
         question = quiz[i]["question"]
         view = miru.View(timeout=60)  # Create a new view
-        a0 = optButtons(quiz[i]["correctAnswer"], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["correctAnswer"])
-        a1 = optButtons(quiz[i]["incorrectAnswers"][0], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][0])
-        a2 = optButtons(quiz[i]["incorrectAnswers"][1], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][1])
-        a3 = optButtons(quiz[i]["incorrectAnswers"][2], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][2])
+        a0 = optButtons(quiz[i]["correctAnswer"], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["correctAnswer"])
+        a1 = optButtons(quiz[i]["incorrectAnswers"][0], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][0])
+        a2 = optButtons(quiz[i]["incorrectAnswers"][1], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][1])
+        a3 = optButtons(quiz[i]["incorrectAnswers"][2], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][2])
         answers = [a0, a1, a2, a3]
         new_list = random.sample(answers, 4)
         for j in new_list:
@@ -56,11 +61,14 @@ async def sudoku(ctx: lightbulb.Context, count: int, category: str, difficulty: 
 
         if hasattr(view, "answer"):  # Check if there is an answer
             if view.answer == answer:
+                score += 1
                 await ctx.respond(f"{answer} is the correct answer!")
             else:
                 await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
         else:
             await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
+    if count > 1:
+        await ctx.respond(f"Total score: **{score}**")
 
 def load(bot):
     bot.add_plugin(plugin)
