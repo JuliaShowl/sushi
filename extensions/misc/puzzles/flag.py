@@ -26,12 +26,12 @@ class optButtons(miru.Button):
 async def flag(ctx: lightbulb.Context, count: int, options: int):
     response = requests.get(f"https://shadify.dev/api/countries/country-quiz?amount={count}&variants={options}")
     quiz = response.json()
-    for i in range(count):
-        answer = quiz[i]["answer"]
-        flag = quiz[i]["flag"]
+    if count == 1:
+        answer = quiz["answer"]
+        flag = quiz["flag"]
         view = miru.View(timeout=60)  # Create a new view
         for j in range(options):
-            view.add_item(optButtons(quiz[i]["variants"][j], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["variants"][j]))
+            view.add_item(optButtons(quiz["variants"][j], style=hikari.ButtonStyle.PRIMARY, label=quiz["variants"][j]))
         embed = hikari.Embed(title="Guess the country")
         embed.set_image(flag)
         message = await ctx.respond(embed=embed, components=view)
@@ -47,6 +47,28 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
                 await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
         else:
             await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
+    else:
+        for i in range(count):
+            answer = quiz[i]["answer"]
+            flag = quiz[i]["flag"]
+            view = miru.View(timeout=60)  # Create a new view
+            for j in range(options):
+                view.add_item(optButtons(quiz[i]["variants"][j], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["variants"][j]))
+            embed = hikari.Embed(title="Guess the country")
+            embed.set_image(flag)
+            message = await ctx.respond(embed=embed, components=view)
+
+            await view.start(message)  # Start listening for interactions
+
+            await view.wait()  # Wait until the view is stopped or times out
+
+            if hasattr(view, "answer"):  # Check if there is an answer
+                if view.answer == answer:
+                    await ctx.respond(f"{answer} is the correct answer!")
+                else:
+                    await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+            else:
+                await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
 
 def load(bot):
     bot.add_plugin(plugin)
