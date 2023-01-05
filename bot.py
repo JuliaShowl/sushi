@@ -1,8 +1,10 @@
 import lightbulb
 import hikari
+import miru
 
 TOKEN = ""
 bot = lightbulb.BotApp(token=TOKEN)
+miru.install(bot)
 
 @bot.command
 @lightbulb.command('ping','Says pong!')
