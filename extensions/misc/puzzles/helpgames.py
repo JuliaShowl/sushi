@@ -9,7 +9,7 @@ plugin = lightbulb.Plugin('helpgames')
 async def help(ctx):
     fq = "`/fq <count|optional> <options|optional>` - Guess the flag\n"
     cq = "`/cq <count|optional> <options|optional>` - Guess the capital\n"
-    trivia = "`/trivia <count|optional>` - Get trivia questions\n"
+    trivia = "`/trivia <count|optional> <category|optional> <difficulty|optional>` - Get trivia questions\n"
     resp = f"**Games**\n{fq}{cq}{trivia}"
     embed = hikari.Embed(title="SushiBot Help",description=resp, color='b0ffe3')
     await ctx.respond(embed=embed)

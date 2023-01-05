@@ -1,3 +1,4 @@
+from numpy import diff
 import requests
 import hikari
 import lightbulb
@@ -20,11 +21,20 @@ class optButtons(miru.Button):
         self.view.stop()
 
 @plugin.command()
-@lightbulb.option("count", "Number of quizzes to generate (1-20) Default 1", type=int, min_value=1, max_value=20,default=1)
+@lightbulb.option("count", "Number of quizzes to generate (1-20) Default 1", type=int, min_value=1, max_value=20,default=1,required=False)
+@lightbulb.option("category", "Category for the question", type=str, choices=['arts_and_literature', 'film_and_tv', 'food_and_drink', 'general_knowledge', 'geography', 'history', 'music', 'science', 'society_and_culture', 'sport_and_lesiure'], required=False, default=None)
+@lightbulb.option("difficulty", "Difficulty of the question", type=str, choices=['easy', 'medium', 'hard'], required=False, default=None)
 @lightbulb.command("trivia", "Get a trivia question", pass_options=True, auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def sudoku(ctx: lightbulb.Context, count: int):
-    response = requests.get(f"https://the-trivia-api.com/api/questions?limit={count}")
+async def sudoku(ctx: lightbulb.Context, count: int, category: str, difficulty: str):
+    if category is None and difficulty is None:
+        response = requests.get(f"https://the-trivia-api.com/api/questions?limit={count}")
+    elif category is not None and difficulty is None:
+        response = requests.get(f"https://the-trivia-api.com/api/questions?category={category}&limit={count}")
+    elif category is None and difficulty is not None:
+        response = requests.get(f"https://the-trivia-api.com/api/questions?diffculty={difficulty}&limit={count}")
+    else:
+        response = requests.get(f"https://the-trivia-api.com/api/questions?diffculty={difficulty}&category={category}&limit={count}")
     quiz = response.json()
     for i in range(count):
         answer = quiz[i]["correctAnswer"]
