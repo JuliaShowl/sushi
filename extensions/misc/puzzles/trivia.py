@@ -68,7 +68,7 @@ async def sudoku(ctx: lightbulb.Context, count: int, category: str, difficulty: 
         else:
             await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
     if count > 1:
-        await ctx.respond(f"Total score: **{score}**")
+        await ctx.respond(f"Total score: **{score}/{count}**")
 
 def load(bot):
     bot.add_plugin(plugin)

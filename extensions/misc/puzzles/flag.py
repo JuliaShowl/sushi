@@ -75,7 +75,7 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
                     await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
             else:
                 await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
-        await ctx.respond(f"Total score: **{score}**")
+        await ctx.respond(f"Total score: **{score}/{count}**")
 
 def load(bot):
     bot.add_plugin(plugin)
