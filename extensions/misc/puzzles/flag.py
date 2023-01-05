@@ -29,10 +29,13 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
         response = requests.get(f"https://shadify.dev/api/countries/country-quiz?variants={options}")
         quiz = response.json()
         answer = quiz["answer"]
+        flag = quiz["flag"]
         view = miru.View(timeout=60)  # Create a new view
         for j in range(options):
             view.add_item(optButtons(quiz["variants"][j], style=hikari.ButtonStyle.PRIMARY, label=quiz["variants"][j]))
-        message = await ctx.respond(quiz["flag"], components=view)
+        embed = hikari.Embed(title="Guess the country")
+        embed.set_image(flag)
+        message = await ctx.respond(embed=embed, components=view)
 
         await view.start(message)  # Start listening for interactions
 

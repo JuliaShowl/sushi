@@ -34,7 +34,9 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
         view = miru.View(timeout=60)  # Create a new view
         for j in range(options):
             view.add_item(optButtons(quiz["variants"][j], style=hikari.ButtonStyle.PRIMARY, label=quiz["variants"][j]))
-        message = await ctx.respond(f"**Guess the capital of {country}**\n{flag}", components=view)
+        embed = hikari.Embed(title=f"Guess the capital of {country}")
+        embed.set_image(flag)
+        message = await ctx.respond(embed=embed, components=view)
 
         await view.start(message)  # Start listening for interactions
 
