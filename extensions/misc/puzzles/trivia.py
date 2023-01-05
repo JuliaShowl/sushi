@@ -1,3 +1,4 @@
+from discord import components
 import requests
 import hikari
 import lightbulb
@@ -10,7 +11,6 @@ plugin.add_checks(
 )
 
 class optButtons(miru.Button):
-    # Let's leave our arguments dynamic this time, instead of hard-coding them
     def __init__(self, choice, author, *args, **kwargs) -> None:
         self.choice = choice
         self.author = author
@@ -19,10 +19,12 @@ class optButtons(miru.Button):
     async def callback(self, ctx: miru.ViewContext) -> None:
         if ctx.user.id == self.author:
             self.view.answer = self.choice
-            self.disabled = True
+            for item in self.view.children:
+                item.disabled = True
             self.view.stop()
         else:
             await ctx.respond("You did not generate this question", flags=hikari.MessageFlag.EPHEMERAL)
+
 
 @plugin.command()
 @lightbulb.option("count", "Number of quizzes to generate (1-20) Default 1", type=int, min_value=1, max_value=20,default=1,required=False)
@@ -60,6 +62,7 @@ async def sudoku(ctx: lightbulb.Context, count: int, category: str, difficulty: 
         await view.wait()  # Wait until the view is stopped or times out
 
         if hasattr(view, "answer"):  # Check if there is an answer
+            await message.edit(components=view.build())
             if view.answer == answer:
                 score += 1
                 await ctx.respond(f"{answer} is the correct answer!")
