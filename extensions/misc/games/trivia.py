@@ -52,7 +52,10 @@ async def trivia(ctx: lightbulb.Context, count: int, category: str, difficulty: 
         new_list = random.sample(answers, 4)
         for j in new_list:
             view.add_item(j)
-        message = await ctx.respond(f"> **{question}**", components=view)
+        if i == 0:
+                message = await ctx.respond(f"> **{question}**", components=view)
+        else:
+            message = await ctx.get_channel().send(f"> **{question}**", components=view)
 
         await view.start(message)  # Start listening for interactions
 
@@ -66,13 +69,13 @@ async def trivia(ctx: lightbulb.Context, count: int, category: str, difficulty: 
         if hasattr(view, "answer"):  # Check if there is an answer
             if view.answer == answer:
                 score += 1
-                await ctx.respond(f"{answer} is the correct answer!")
+                await ctx.get_channel().send(f"{answer} is the correct answer!")
             else:
-                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+                await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
         else:
-            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
+            await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
     if count > 1:
-        await ctx.respond(f"Total score: **{score}/{count}**")
+        await ctx.get_channel().send(f"Total score: **{score}/{count}**")
 
 def load(bot):
     bot.add_plugin(plugin)

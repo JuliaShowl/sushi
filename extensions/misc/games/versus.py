@@ -1,4 +1,3 @@
-from discord import user
 import requests
 import hikari
 import lightbulb
@@ -60,7 +59,10 @@ async def trivia(ctx, count, category, difficulty):
         new_list = random.sample(answers, 4)
         for j in new_list:
             view.add_item(j)
-        message = await ctx.respond(f"> **{question}**", components=view)
+        if i == 0:
+                message = await ctx.respond(f"> **{question}**", components=view)
+        else:
+            message = await ctx.get_channel().send(f"> **{question}**", components=view)
 
         await view.start(message)  # Start listening for interactions
 
@@ -122,11 +124,11 @@ async def fq(ctx, count, options):
                 await ctx.respond(f"{answer} is the correct answer!")
                 username = await ctx.bot.rest.fetch_user(view.author)
                 username = str(username)
-                await ctx.respond(f"{username} has won!")
+                await ctx.get_channel().send(f"{username} has won!")
             else:
-                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.\nNo one won :(")
+                await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.\nNo one won :(")
         else:
-            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.\nNo one won :(")
+            await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.\nNo one won :(")
     else:
         scores = {}
         for i in range(count):
@@ -137,7 +139,10 @@ async def fq(ctx, count, options):
                 view.add_item(optButtons(quiz[i]["variants"][j], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["variants"][j]))
             embed = hikari.Embed(title="Guess the country")
             embed.set_image(flag)
-            message = await ctx.respond(embed=embed, components=view)
+            if i == 0:
+                message = await ctx.respond(embed=embed, components=view)
+            else:
+                message = await ctx.get_channel().send(embed=embed, components=view)
 
             await view.start(message)  # Start listening for interactions
 
@@ -154,17 +159,17 @@ async def fq(ctx, count, options):
                         scores[f"{view.author}"] = 1
                     else:
                         scores[f"{view.author}"] += 1
-                    await ctx.respond(f"{answer} is the correct answer!")
+                    await ctx.get_channel().send(f"{answer} is the correct answer!")
                 else:
-                    await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+                    await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
             else:
-                await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
+                await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
         results = ""
         for i in scores:
             username = await ctx.bot.rest.fetch_user(i)
             results = results +  str(username) + " - " + str(scores[i]) + "\n"
         embed = hikari.Embed(title="Final Scores", description=f"{results}")
-        await ctx.respond(embed=embed)
+        await ctx.get_channel().send(embed=embed)
 
 async def cq(ctx, count, options):
     options = options or 4
@@ -194,11 +199,11 @@ async def cq(ctx, count, options):
             if view.answer == answer:
                 username = await ctx.bot.rest.fetch_user(view.author)
                 username = str(username)
-                await ctx.respond(f"{answer} is the correct answer!\n{username} has won!")
+                await ctx.get_channel().send(f"{answer} is the correct answer!\n{username} has won!")
             else:
-                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.\nNo one won :(")
+                await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.\nNo one won :(")
         else:
-            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.\nNo one won :(")
+            await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.\nNo one won :(")
     else:
         scores = {}
         for i in range(count):
@@ -210,7 +215,10 @@ async def cq(ctx, count, options):
                 view.add_item(optButtons(quiz[i]["variants"][j], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["variants"][j]))
             embed = hikari.Embed(title=f"Guess the capital of {country}")
             embed.set_image(flag)
-            message = await ctx.respond(embed=embed, components=view)
+            if i == 0:
+                message = await ctx.respond(embed=embed, components=view)
+            else:
+                message = await ctx.get_channel().send(embed=embed, components=view)
 
             await view.start(message)  # Start listening for interactions
 
@@ -227,17 +235,17 @@ async def cq(ctx, count, options):
                         scores[f"{view.author}"] = 1
                     else:
                         scores[f"{view.author}"] += 1
-                    await ctx.respond(f"{answer} is the correct answer!")
+                    await ctx.get_channel().send(f"{answer} is the correct answer!")
                 else:
-                    await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+                    await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
             else:
-                await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
+                await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
         results = ""
         for i in scores:
             username = await ctx.bot.rest.fetch_user(i)
             results = results +  str(username) + " - " + str(scores[i]) + "\n"
         embed = hikari.Embed(title="Final Scores", description=f"{results}")
-        await ctx.respond(embed=embed)
+        await ctx.get_channel().send(embed=embed)
 
 def load(bot):
     bot.add_plugin(plugin)

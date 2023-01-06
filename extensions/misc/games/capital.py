@@ -51,11 +51,11 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
 
         if hasattr(view, "answer"):  # Check if there is an answer
             if view.answer == answer:
-                await ctx.respond(f"{answer} is the correct answer!")
+                await ctx.get_channel().send(f"{answer} is the correct answer!")
             else:
-                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+                await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
         else:
-            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
+            await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
     else:
         score = 0
         for i in range(count):
@@ -67,7 +67,10 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
                 view.add_item(optButtons(quiz[i]["variants"][j], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["variants"][j]))
             embed = hikari.Embed(title=f"Guess the capital of {country}")
             embed.set_image(flag)
-            message = await ctx.respond(embed=embed, components=view)
+            if i == 0:
+                message = await ctx.respond(embed=embed, components=view)
+            else:
+                message = await ctx.get_channel().send(embed=embed, components=view)
 
             await view.start(message)  # Start listening for interactions
 
@@ -81,12 +84,12 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
             if hasattr(view, "answer"):  # Check if there is an answer
                 if view.answer == answer:
                     score += 1
-                    await ctx.respond(f"{answer} is the correct answer!")
+                    await ctx.get_channel().send(f"{answer} is the correct answer!")
                 else:
-                    await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+                    await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
             else:
-                await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
-        await ctx.respond(f"Total score: **{score}/{count}**")
+                await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
+        await ctx.get_channel().send(f"Total score: **{score}/{count}**")
 
 def load(bot):
     bot.add_plugin(plugin)
