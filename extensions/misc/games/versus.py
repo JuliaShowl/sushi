@@ -18,8 +18,6 @@ class optButtons(miru.Button):
     async def callback(self, ctx: miru.ViewContext) -> None:
         self.view.answer = self.choice
         self.view.author = ctx.user.id
-        for item in self.view.children:
-            item.disabled = True
         self.view.stop()
 
 
@@ -68,6 +66,9 @@ async def trivia(ctx, count, category, difficulty):
 
         await view.wait()  # Wait until the view is stopped or times out
 
+        for i in view.children:
+            i.disabled=True
+
         await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
 
         if hasattr(view, "answer"):  # Check if there is an answer
@@ -111,6 +112,9 @@ async def fq(ctx, count, options):
 
         await view.wait()  # Wait until the view is stopped or times out
 
+        for i in view.children:
+            i.disabled=True
+
         await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
 
         if hasattr(view, "answer"):  # Check if there is an answer
@@ -138,6 +142,9 @@ async def fq(ctx, count, options):
             await view.start(message)  # Start listening for interactions
 
             await view.wait()  # Wait until the view is stopped or times out
+
+            for i in view.children:
+                i.disabled=True
 
             await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
 
@@ -178,6 +185,9 @@ async def cq(ctx, count, options):
 
         await view.wait()  # Wait until the view is stopped or times out
 
+        for i in view.children:
+            i.disabled=True
+
         await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
 
         if hasattr(view, "answer"):  # Check if there is an answer
@@ -205,6 +215,9 @@ async def cq(ctx, count, options):
             await view.start(message)  # Start listening for interactions
 
             await view.wait()  # Wait until the view is stopped or times out
+
+            for i in view.children:
+                i.disabled=True
 
             await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
 

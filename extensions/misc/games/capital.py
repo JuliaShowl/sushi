@@ -17,8 +17,6 @@ class optButtons(miru.Button):
     async def callback(self, ctx: miru.ViewContext) -> None:
         if ctx.user.id == self.author:
             self.view.answer = self.choice
-            for item in self.view.children:
-                item.disabled = True
             self.view.stop()
         else:
             await ctx.respond("You did not generate this question", flags=hikari.MessageFlag.EPHEMERAL)
@@ -46,6 +44,9 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
 
         await view.wait()  # Wait until the view is stopped or times out
 
+        for i in view.children:
+            i.disabled=True
+
         await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
 
         if hasattr(view, "answer"):  # Check if there is an answer
@@ -72,8 +73,12 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
 
             await view.wait()  # Wait until the view is stopped or times out
 
+            for i in view.children:
+                i.disabled=True
+
+            await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
+
             if hasattr(view, "answer"):  # Check if there is an answer
-                await message.edit(components=view.build())
                 if view.answer == answer:
                     score += 1
                     await ctx.respond(f"{answer} is the correct answer!")

@@ -18,8 +18,6 @@ class optButtons(miru.Button):
     async def callback(self, ctx: miru.ViewContext) -> None:
         if ctx.user.id == self.author:
             self.view.answer = self.choice
-            for item in self.view.children:
-                item.disabled = True
             self.view.stop()
         else:
             await ctx.respond("You did not generate this question", flags=hikari.MessageFlag.EPHEMERAL)
@@ -45,7 +43,7 @@ async def trivia(ctx: lightbulb.Context, count: int, category: str, difficulty: 
     for i in range(count):
         answer = quiz[i]["correctAnswer"]
         question = quiz[i]["question"]
-        view = miru.View(timeout=60)  # Create a new view
+        view = miru.View(timeout=10)  # Create a new view
         a0 = optButtons(quiz[i]["correctAnswer"], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["correctAnswer"])
         a1 = optButtons(quiz[i]["incorrectAnswers"][0], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][0])
         a2 = optButtons(quiz[i]["incorrectAnswers"][1], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][1])
@@ -59,6 +57,9 @@ async def trivia(ctx: lightbulb.Context, count: int, category: str, difficulty: 
         await view.start(message)  # Start listening for interactions
 
         await view.wait()  # Wait until the view is stopped or times out
+
+        for i in view.children:
+            i.disabled=True
 
         await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
 
