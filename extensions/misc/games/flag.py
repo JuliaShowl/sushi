@@ -1,4 +1,3 @@
-from discord import components
 import lightbulb
 import hikari
 import miru

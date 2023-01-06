@@ -1,4 +1,3 @@
-from discord import components
 import requests
 import hikari
 import lightbulb
