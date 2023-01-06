@@ -10,7 +10,7 @@ plugin = lightbulb.Plugin('meme')
 async def meme(ctx):
     response = requests.get('https://meme-api.com/gimme')
     meme = response.json()
-    while meme["nsfw"]:
+    while meme["nsfw"] == True:
         response = requests.get('https://meme-api.com/gimme')
         meme = response.json()
     await ctx.respond(meme["url"])
