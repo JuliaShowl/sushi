@@ -79,22 +79,22 @@ async def trivia(ctx, count, category, difficulty):
                     scores[f"{view.author}"] = 1
                 else:
                     scores[f"{view.author}"] += 1
-                await ctx.respond(f"{answer} is the correct answer!")
+                await ctx.get_channel().send(f"{answer} is the correct answer!")
             else:
-                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+                await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
         else:
-            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
+            await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
     if count > 1:
         results = ""
         for i in scores:
             username = await ctx.bot.rest.fetch_user(i)
             results = results +  str(username) + " - " + str(scores[i]) + "\n"
         embed = hikari.Embed(title="Final Scores", description=f"{results}")
-        await ctx.respond(embed=embed)
+        await ctx.get_channel().send(embed=embed)
     else:
         username = await ctx.bot.rest.fetch_user(i)
         username = str(username)
-        await ctx.respond(f"{username} has won!")
+        await ctx.get_channel().send(f"{username} has won!")
 
 async def fq(ctx, count, options):
     options = options or 4
