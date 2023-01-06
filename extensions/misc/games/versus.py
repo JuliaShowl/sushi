@@ -29,9 +29,9 @@ class optButtons(miru.Button):
 @lightbulb.option("difficulty", "Difficulty of the question. Only applicable to Trivia", type=str, choices=['easy', 'medium', 'hard'], required=False, default=None)
 @lightbulb.option("options", "Number of answers to generate. Only applicable to Flag Quiz and Capital Quiz (2-6) Default 4", type=int, min_value=2, max_value=6, required=False)
 @lightbulb.option("type", "Type of game to play", type=str, required=True, choices=["Trivia", "Flag Quiz", "Capital Quiz"])
-@lightbulb.command("versus", "Play games against others", pass_options=True, auto_defer=True)
+@lightbulb.command("vs", "Play games against others", pass_options=True, auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def sudoku(ctx: lightbulb.Context, type: str, count: int, category: str, difficulty: str, options: int):
+async def vs(ctx: lightbulb.Context, type: str, count: int, category: str, difficulty: str, options: int):
     if type == "Trivia":
         await trivia(ctx, count, category, difficulty)
     if type == "Flag Quiz":
@@ -116,14 +116,13 @@ async def fq(ctx, count, options):
         if hasattr(view, "answer"):  # Check if there is an answer
             if view.answer == answer:
                 await ctx.respond(f"{answer} is the correct answer!")
+                username = await ctx.bot.rest.fetch_user(view.author)
+                username = str(username)
+                await ctx.respond(f"{username} has won!")
             else:
-                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.\nNo one won :(")
         else:
-            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
-
-        username = await ctx.bot.rest.fetch_user(i)
-        username = str(username)
-        await ctx.respond(f"{username} has won!")
+            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.\nNo one won :(")
     else:
         scores = {}
         for i in range(count):
@@ -183,14 +182,13 @@ async def cq(ctx, count, options):
 
         if hasattr(view, "answer"):  # Check if there is an answer
             if view.answer == answer:
-                await ctx.respond(f"{answer} is the correct answer!")
+                username = await ctx.bot.rest.fetch_user(view.author)
+                username = str(username)
+                await ctx.respond(f"{answer} is the correct answer!\n{username} has won!")
             else:
-                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+                await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.\nNo one won :(")
         else:
-            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.")
-        username = await ctx.bot.rest.fetch_user(i)
-        username = str(username)
-        await ctx.respond(f"{username} has won!")
+            await ctx.respond(f"Did not receive an answer in time! The correct answer is {answer}.\nNo one won :(")
     else:
         scores = {}
         for i in range(count):

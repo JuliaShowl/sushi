@@ -31,7 +31,7 @@ class optButtons(miru.Button):
 @lightbulb.option("difficulty", "Difficulty of the question", type=str, choices=['easy', 'medium', 'hard'], required=False, default=None)
 @lightbulb.command("trivia", "Get a trivia question", pass_options=True, auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def sudoku(ctx: lightbulb.Context, count: int, category: str, difficulty: str):
+async def trivia(ctx: lightbulb.Context, count: int, category: str, difficulty: str):
     if category is None and difficulty is None:
         response = requests.get(f"https://the-trivia-api.com/api/questions?limit={count}")
     elif category is not None and difficulty is None:
