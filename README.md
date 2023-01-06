@@ -8,6 +8,8 @@ Media responders will require a spreadsheet with embedable links or files to upl
 
 [`Lightbulb`](https://github.com/tandemdude/hikari-lightbulb/) - An easy to use command handler library that integrates with the Discord API wrapper library for Python, Hikari.
 
+[`miru`](https://github.com/HyperGH/hikari-miru) - An optional component handler for hikari, inspired by discord.py's views.
+
 ## Getting Started
 - Python 3.8 or above
 - Install dependencies with `python3 -m pip install -r requirements.txt`
