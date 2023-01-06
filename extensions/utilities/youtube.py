@@ -1,14 +1,15 @@
-from tokenize import String
 import lightbulb
 import hikari
 from lightbulb.utils import pag, nav
+from lightbulb.utils.pag import EmbedPaginator
+from miru.ext import nav
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
  
 SCOPES = ['https://www.googleapis.com/auth/youtube.readonly']
-SERVICE_ACCOUNT_FILE = ''
+SERVICE_ACCOUNT_FILE = './discord-bot-366601-efb7cc4855b5.json'
 credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
@@ -16,17 +17,17 @@ plugin = lightbulb.Plugin('youtube')
 
 @plugin.command
 @lightbulb.option("query", "Query to search", type=str, required=True)
-@lightbulb.option("count", "Number of queries to retreive", type=int, required=False, min_value=1, max_value=50, default=10)
-@lightbulb.command("yt", "Search for YouTube videos", auto_defer=True, pass_options=True)
+@lightbulb.option("count", "Number of queries to retreive. (1-50) Default 10", type=int, required=False, min_value=1, max_value=50, default=10)
+@lightbulb.command("yt", "Search for YouTube videos")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def yt(ctx: lightbulb.Context, query: str, count:int):
+async def yt(ctx: lightbulb.Context):
     youtube = build('youtube', 'v3', credentials=credentials)
 
     response = youtube.search().list(
-        q=query,
+        q=ctx.options.query,
         part='id',
         type='video',
-        maxResults=count
+        maxResults=ctx.options.count
     ).execute()
 
     if not response.get('items'):
@@ -35,31 +36,26 @@ async def yt(ctx: lightbulb.Context, query: str, count:int):
 
     videos = []
 
-    # Add each result to the appropriate list, and then display the lists of
-    # matching videos, channels, and playlists.
     for search_result in response.get('items', []):
-        videos.append(search_result['id']['videoId'])
+        videos.append(f"https://youtube.com/watch?v={search_result['id']['videoId']}")
 
-    paginated = pag.StringPaginator()
-    for l in range(len(videos)):
-        paginated.add_line(f"https://youtube.com/watch?v={videos[l]}")
-        paginated.new_page()
-    navigator = nav.ReactionNavigator(paginated.build_pages())
-    await navigator.run(ctx)
+    buttons = [nav.FirstButton(), nav.PrevButton(), nav.StopButton(), nav.NextButton(), nav.LastButton()]
+    navigator = nav.NavigatorView(pages=videos, buttons=buttons)
+    await navigator.send(ctx.interaction)
 
 @plugin.command
 @lightbulb.option("query", "Query to search", type=str, required=True)
-@lightbulb.option("count", "Number of queries to retreive", type=int, required=False, min_value=1, max_value=25, default=5)
-@lightbulb.command("yt_stats", "Get statistics for a certain YouTube video", auto_defer=True, pass_options=True)
+@lightbulb.option("count", "Number of queries to retreive. (1-25) Default 5", type=int, required=False, min_value=1, max_value=25, default=5)
+@lightbulb.command("yt_stats", "Get statistics for a certain YouTube video")
 @lightbulb.implements(lightbulb.SlashCommand)
-async def yt_stats(ctx: lightbulb.Context, query: str, count: int):
+async def yt_stats(ctx: lightbulb.Context):
     youtube = build('youtube', 'v3', credentials=credentials)
 
     response = youtube.search().list(
-        q=query,
+         q=ctx.options.query,
         part='id,snippet',
         type='video',
-        maxResults=count
+        maxResults=ctx.options.count
     ).execute()
 
     if not response.get('items'):
@@ -67,11 +63,6 @@ async def yt_stats(ctx: lightbulb.Context, query: str, count: int):
         return
 
     videos = []
-    titles = []
-    views = []
-    likes = []
-    comments = []
-    thumbnails = []
 
     # Add each result to the appropriate list, and then display the lists of
     # matching videos, channels, and playlists.
@@ -87,33 +78,25 @@ async def yt_stats(ctx: lightbulb.Context, query: str, count: int):
         await ctx.respond("No results found")
         return
 
-    paginated = pag.EmbedPaginator()
-    @paginated.embed_factory()
-    def build_embed(page_index, page_content):
-            page_content = eval(page_content)
-            embed = hikari.Embed(title = page_content.get('title'), description= page_content.get('content'))
-            embed.set_thumbnail(page_content.get('thumbnail'))
-            return embed
-
+    pages = []
     for i in range(len(response)):
-        titles.append(response[i][0]['snippet']['title'])
-        titles[i] = titles[i].replace("&quot;", "\"")
-        resp = {'title': titles[i]}
-        thumbnails.append(response[i][0]['snippet']['thumbnails']['default']['url'])
-        views.append(int(response[i][0]['statistics']['viewCount']))
-        views[i] = str("{:,}".format(views[i]))
-        likes.append(int(response[i][0]['statistics']['likeCount']))
-        likes[i] = str("{:,}".format(likes[i]))
-        comments.append(int(response[i][0]['statistics']['commentCount']))
-        comments[i] = str("{:,}".format(comments[i]))
-        stats = f'https://youtube.com/watch?v={videos[i]}\n\n**Views:** {views[i]}\n**Likes:** {likes[i]}\n**Comments:** {comments[i]}'
-        resp.update({'content': stats})
-        resp.update({'thumbnail': thumbnails[i]})
-        paginated.add_line(resp)
-        paginated.new_page()
+        title = response[i][0]['snippet']['title']
+        title = title.replace("&quot;", "\"")
+        thumbnail = response[i][0]['snippet']['thumbnails']['default']['url']
+        views = int(response[i][0]['statistics']['viewCount'])
+        views = str("{:,}".format(views))
+        likes = int(response[i][0]['statistics']['likeCount'])
+        likes = str("{:,}".format(likes))
+        comments = int(response[i][0]['statistics']['commentCount'])
+        comments = str("{:,}".format(comments))
+        stats = f'https://youtube.com/watch?v={videos[i]}\n\n**Views:** {views}\n**Likes:** {likes}\n**Comments:** {comments}'
+        embed = hikari.Embed(title = title, description=stats)
+        embed.set_thumbnail(thumbnail)
+        pages.append(embed)
     
-    navigator = nav.ButtonNavigator(paginated.build_pages())
-    await navigator.run(ctx)
+    buttons = [nav.FirstButton(), nav.PrevButton(), nav.StopButton(), nav.NextButton(), nav.LastButton()]
+    navigator = nav.NavigatorView(pages=pages, buttons=buttons)
+    await navigator.send(ctx.interaction)
 
 def load(bot):
     bot.add_plugin(plugin)
