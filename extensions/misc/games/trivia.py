@@ -43,7 +43,7 @@ async def trivia(ctx: lightbulb.Context, count: int, category: str, difficulty: 
     for i in range(count):
         answer = quiz[i]["correctAnswer"]
         question = quiz[i]["question"]
-        view = miru.View(timeout=10)  # Create a new view
+        view = miru.View(timeout=60)  # Create a new view
         a0 = optButtons(quiz[i]["correctAnswer"], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["correctAnswer"])
         a1 = optButtons(quiz[i]["incorrectAnswers"][0], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][0])
         a2 = optButtons(quiz[i]["incorrectAnswers"][1], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][1])
