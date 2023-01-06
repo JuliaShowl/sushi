@@ -3,6 +3,9 @@ import lightbulb
 import re
 
 plugin = lightbulb.Plugin("emotes")
+plugin.add_checks(
+    lightbulb.guild_only
+)
 
 static_re = re.compile(r"<:([^:]+):(\d+)>")
 animated_re = re.compile(r"<a:([^:]+):(\d+)>")
@@ -32,7 +35,10 @@ async def steal(ctx: lightbulb.Context, emotes: hikari.Message):
     for i in range(len(embd)):
         embed = hikari.Embed(description=embd[i])
         embed.set_image(images[i])
-        await ctx.respond(embed=embed)
+        if i == 1:
+            await ctx.respond(embed=embed)
+        else:
+            await ctx.get_channel().send(embed=embed)
     
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
@@ -58,7 +64,10 @@ async def steal(ctx: lightbulb.Context, target: hikari.Message):
     for i in range(len(embd)):
         embed = hikari.Embed(description=embd[i])
         embed.set_image(images[i])
-        await ctx.respond(embed=embed)
+        if i == 1:
+            await ctx.respond(embed=embed)
+        else:
+            await ctx.get_channel().send(embed=embed)
         
 def load(bot):
     bot.add_plugin(plugin)
