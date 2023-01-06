@@ -81,6 +81,8 @@ async def trivia(ctx, count, category, difficulty):
                     scores[f"{view.author}"] += 1
                 await ctx.get_channel().send(f"{answer} is the correct answer!")
             else:
+                if f"{view.author}" not in scores:
+                        scores[f"{view.author}"] = 0
                 await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
         else:
             await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
@@ -161,6 +163,8 @@ async def fq(ctx, count, options):
                         scores[f"{view.author}"] += 1
                     await ctx.get_channel().send(f"{answer} is the correct answer!")
                 else:
+                    if f"{view.author}" not in scores:
+                        scores[f"{view.author}"] = 0
                     await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
             else:
                 await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
@@ -237,6 +241,8 @@ async def cq(ctx, count, options):
                         scores[f"{view.author}"] += 1
                     await ctx.get_channel().send(f"{answer} is the correct answer!")
                 else:
+                    if f"{view.author}" not in scores:
+                        scores[f"{view.author}"] = 0
                     await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
             else:
                 await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
