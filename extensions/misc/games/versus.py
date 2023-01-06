@@ -94,7 +94,7 @@ async def trivia(ctx, count, category, difficulty):
         embed = hikari.Embed(title="Final Scores", description=f"{results}")
         await ctx.get_channel().send(embed=embed)
     else:
-        username = await ctx.bot.rest.fetch_user(i)
+        username = await ctx.bot.rest.fetch_user(view.author)
         username = str(username)
         await ctx.get_channel().send(f"{username} has won!")
 
