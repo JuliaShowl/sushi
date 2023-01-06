@@ -60,8 +60,9 @@ async def sudoku(ctx: lightbulb.Context, count: int, category: str, difficulty: 
 
         await view.wait()  # Wait until the view is stopped or times out
 
+        await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
+
         if hasattr(view, "answer"):  # Check if there is an answer
-            await message.edit(components=view.build())
             if view.answer == answer:
                 score += 1
                 await ctx.respond(f"{answer} is the correct answer!")

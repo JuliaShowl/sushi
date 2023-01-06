@@ -46,9 +46,10 @@ async def flag(ctx: lightbulb.Context, count: int, options: int):
 
         await view.wait()  # Wait until the view is stopped or times out
 
+        await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
+
         if hasattr(view, "answer"):  # Check if there is an answer
             if view.answer == answer:
-                await message.edit(components=view.build())
                 await ctx.respond(f"{answer} is the correct answer!")
             else:
                 await ctx.respond(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
