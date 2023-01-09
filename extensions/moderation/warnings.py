@@ -22,7 +22,7 @@ plugin.add_checks(
 @plugin.command
 @lightbulb.option('user','The user to warn', type=hikari.User, required=True)
 @lightbulb.option('reason','Reason for warning',type=str,required=False,default='Not specified')
-@lightbulb.command('warn','Warn a user for breaking a rule', auto_defer=True, pass_options=True)
+@lightbulb.command('warn','Warn a user', auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def warn(ctx: lightbulb.Context, user: hikari.User, reason: str):
     dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")

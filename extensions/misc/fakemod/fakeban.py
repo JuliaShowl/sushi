@@ -10,9 +10,9 @@ plugin.add_checks(
 
 @plugin.command()
 @lightbulb.add_cooldown(5.0,1,lightbulb.UserBucket)
-@lightbulb.option("reason", "Reason for banning member", type=str, required=False, default="Not specified")
-@lightbulb.option("user", "User you want to ban", type=hikari.User,required=True)
-@lightbulb.command("bans", "Ban a user", auto_defer = True, pass_options = True)
+@lightbulb.option("reason", "Reason for **fake** banning member", type=str, required=False, default="Not specified")
+@lightbulb.option("user", "User you want to **fake** ban", type=hikari.User,required=True)
+@lightbulb.command("bans", "**Fake** bans a user", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def bans(ctx: lightbulb.Context, user: hikari.User, reason: str):
     await ctx.respond(f"Banning **{user}**")
