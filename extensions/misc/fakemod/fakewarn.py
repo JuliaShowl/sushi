@@ -1,4 +1,3 @@
-from tokenize import String
 import lightbulb
 import hikari
 

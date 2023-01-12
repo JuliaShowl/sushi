@@ -1,5 +1,4 @@
-from tokenize import String
-from time import sleep
+import asyncio
 import lightbulb
 import hikari
 
@@ -15,12 +14,8 @@ plugin.add_checks(
 @lightbulb.command("kicks", "**Fake** kicks a user", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def kicks(ctx: lightbulb.Context, user: hikari.User, reason: str):
-    if user.id == 192039083617288193:
-        await ctx.respond(f"Attempting to kick **{ctx.author}**")
-        await ctx.edit_last_response(f"{ctx.author.mention} has been banned for `Attempting to kick bot owner`")
-        return
     await ctx.respond(f'Attempting to kick **{user}**.')
-    sleep(1)
+    await asyncio.sleep(1)
     await ctx.edit_last_response(f"{user.mention} has been kicked for `{reason}`")
 
 def load(bot):

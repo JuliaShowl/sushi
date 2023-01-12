@@ -1,5 +1,4 @@
-from time import sleep
-from tokenize import String
+import asyncio
 import lightbulb
 import hikari
 
@@ -16,7 +15,7 @@ plugin.add_checks(
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def bans(ctx: lightbulb.Context, user: hikari.User, reason: str):
     await ctx.respond(f"Banning **{user}**")
-    sleep(1)
+    await asyncio.sleep(1)
     await ctx.edit_last_response(f"{user.mention} has been banned for `{reason}`")
 
 def load(bot):

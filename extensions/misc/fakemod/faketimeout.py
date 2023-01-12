@@ -1,9 +1,8 @@
-from tokenize import String
 from datetime import datetime, timedelta
 import lightbulb
 import hikari
 import pytz
-from time import sleep
+import asyncio
 
 plugin = lightbulb.Plugin('faketimeout')
 
@@ -28,13 +27,13 @@ async def timeouts(ctx: lightbulb.Context, user: hikari.User, second: int, minut
     if days == 0 and hour == 0 and minute == 0 and second == 0:
         await ctx.respond(f"Removing timeout from **{user}**")
         txt = f"Timeout for {user} has been removed successfully!"
-        sleep(1)
+        await asyncio.sleep(1)
         await ctx.edit_last_response(txt)
         return
 
     else:
         await ctx.respond(f"Attempting to timeout **{user}**")
-        sleep(1)
+        await asyncio.sleep(1)
         txt = f"{user.mention} has been timed out until <t:{int(then.timestamp())}:R> for `{ctx.options.reason}`"
         await ctx.edit_last_response(txt)
 
