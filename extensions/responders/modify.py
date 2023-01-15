@@ -163,7 +163,7 @@ async def remove(ctx: lightbulb.Context, media: str):
                         }]
                 }  
                 sheet.batchUpdate(spreadsheetId=SUSHI,body=request_body).execute()
-                await ctx.respond(f"Removed {media} to from database!")
+                await ctx.respond(f"Removed {media} from database!")
                 return
     except HttpError as err:
         print(err)
@@ -200,7 +200,7 @@ async def add_sushi(ctx: lightbulb.Context, target: hikari.Message):
 @plugin.command
 @lightbulb.command("Add Egg", "Add pictures to Egg", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.MessageCommand)
-async def add_sushi(ctx: lightbulb.Context, target: hikari.Message):
+async def add_egg(ctx: lightbulb.Context, target: hikari.Message):
     media = ""
     urls = []
     for i in target.attachments:
@@ -227,7 +227,7 @@ async def add_sushi(ctx: lightbulb.Context, target: hikari.Message):
 @plugin.command
 @lightbulb.command("Add Munchie", "Add pictures to sushi", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.MessageCommand)
-async def add_sushi(ctx: lightbulb.Context, target: hikari.Message):
+async def add_munchie(ctx: lightbulb.Context, target: hikari.Message):
     media = ""
     urls = []
     for i in target.attachments:

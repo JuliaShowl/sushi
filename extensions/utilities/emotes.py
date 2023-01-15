@@ -64,7 +64,7 @@ async def steal(ctx: lightbulb.Context, target: hikari.Message):
     for i in range(len(embd)):
         embed = hikari.Embed(description=embd[i])
         embed.set_image(images[i])
-        if i == 1:
+        if i == 0:
             await ctx.respond(embed=embed)
         else:
             await ctx.get_channel().send(embed=embed)
