@@ -5,15 +5,26 @@ import requests
 plugin = lightbulb.Plugin('meme')
 
 @plugin.command
-@lightbulb.command('meme','Get a random meme')
+@lightbulb.option('sub', "Get a meme from a specific subreddit", type=str, required=False)
+@lightbulb.command('meme','Get a random meme', auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def meme(ctx):
-    response = requests.get('https://meme-api.com/gimme')
-    meme = response.json()
-    while meme["nsfw"] == True:
-        response = requests.get('https://meme-api.com/gimme')
+async def meme(ctx: lightbulb.Context, sub: str):
+    if sub is not None:
+        try:
+            response = requests.get(f'https://meme-api.com/gimme/{sub}')
+            meme = response.json()
+            while meme["nsfw"] == True:
+                response = requests.get(f'https://meme-api.com/gimme{sub}')
+                meme = response.json()
+            await ctx.respond(meme["url"])
+        except:
+            await ctx.respond("Invalid subreddit")
+    else:
+        response = requests.get(f'https://meme-api.com/gimme/')
         meme = response.json()
-    await ctx.respond(meme["url"])
-
+        while meme["nsfw"] == True:
+            response = requests.get(f'https://meme-api.com/gimme')
+            meme = response.json()
+        await ctx.respond(meme["url"])
 def load(bot):
     bot.add_plugin(plugin)

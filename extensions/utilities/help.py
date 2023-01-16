@@ -18,7 +18,7 @@ async def help(ctx):
     zim = "`/zimzalabim` - Are you ready for this?\n"
     pan = "`/pantomime` - Like a pantomime\n"
     math = "`/solve <equation>` - Solves equations. Supports python's math library\n"
-    meme = "`/meme` - Gets a random reddit meme\n"
+    meme = "`/meme <sub|optional>` - Gets a random reddit meme\n"
     yoink = "`/yoink <emotes>` - Grabs custom emotes.\n"
     yt = "`/yt <query> <count|optional>` - Search for YouTube videos.\n"
     yt_stats = "`/yt_stats <query> <count|optional>` - Get statistics for a YouTube video.\n"
