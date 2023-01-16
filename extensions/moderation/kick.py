@@ -27,29 +27,32 @@ plugin.add_checks(
 @lightbulb.command("kick", "Kick a user", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def ban(ctx: lightbulb.Context, user: hikari.User, reason: str):
-    await ctx.bot.rest.kick_member(user = user.id, guild = ctx.get_guild(), reason = reason)
-    dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        await ctx.bot.rest.kick_member(user = user.id, guild = ctx.get_guild(), reason = reason)
+        dt = datetime.now(tz=pytz.timezone("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
+        try:
+            service = build('sheets', 'v4', credentials=credentials)
 
-        # Call the Sheets API
-        sheet = service.spreadsheets()
-        rng = 'Sheet1!A:A'
+            # Call the Sheets API
+            sheet = service.spreadsheets()
+            rng = 'Sheet1!A:A'
 
-        # How the input data should be interpreted.
-        value_input_option = 'USER_ENTERED'
+            # How the input data should be interpreted.
+            value_input_option = 'USER_ENTERED'
 
-        value_range_body = {
-            "majorDimension": "COLUMNS",
-           'values': [[str(dt)] ,["Kick"], [str(user)], [str(user.id)], [str(reason)], [str(ctx.author)]]
-        }
+            value_range_body = {
+                "majorDimension": "COLUMNS",
+            'values': [[str(dt)] ,["Kick"], [str(user)], [str(user.id)], [str(reason)], [str(ctx.author)]]
+            }
 
-        sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
+            sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
 
-    except HttpError as err:
-        print(err)
+        except HttpError as err:
+            print(err)
 
-    await ctx.respond(f"{user} has been kicked for `{reason}`")
+        await ctx.respond(f"{user} has been kicked for `{reason}`")
+    except:
+        await ctx.respond("Unable to ban that user. That user may be higher than the bot.")
     
 
 def load(bot):

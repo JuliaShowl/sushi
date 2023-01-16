@@ -28,31 +28,34 @@ plugin.add_checks(
 @lightbulb.command("ban", "Ban a user", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def ban(ctx: lightbulb.Context, user: hikari.User, delete_message: int, reason: str):
-    delete = delete_message or 0
-    await ctx.respond(f"Banning **{user}**")
-    await ctx.bot.rest.ban_member(user = user.id, guild = ctx.get_guild(), reason = reason, delete_message_days=delete)
-    dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        delete = delete_message or 0
+        await ctx.respond(f"Banning **{user}**")
+        await ctx.bot.rest.ban_member(user = user.id, guild = ctx.get_guild(), reason = reason, delete_message_seconds=delete)
+        dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
+        try:
+            service = build('sheets', 'v4', credentials=credentials)
 
-        # Call the Sheets API
-        sheet = service.spreadsheets()
-        rng = 'Sheet1!A:A'
+            # Call the Sheets API
+            sheet = service.spreadsheets()
+            rng = 'Sheet1!A:A'
 
-        # How the input data should be interpreted.
-        value_input_option = 'USER_ENTERED'
+            # How the input data should be interpreted.
+            value_input_option = 'USER_ENTERED'
 
-        value_range_body = {
-            "majorDimension": "COLUMNS",
-           'values': [[str(dt)] ,["Ban"], [str(user)], [str(user.id)], [str(reason)], [str(ctx.author)]]
-        }
+            value_range_body = {
+                "majorDimension": "COLUMNS",
+            'values': [[str(dt)] ,["Ban"], [str(user)], [str(user.id)], [str(reason)], [str(ctx.author)]]
+            }
 
-        sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
+            sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
 
-    except HttpError as err:
-        print(err)
+        except HttpError as err:
+            print(err)
 
-    await ctx.edit_last_response(f"{user} has been banned for `{reason}`")
+        await ctx.edit_last_response(f"{user} has been banned for `{reason}`")
+    except:
+        await ctx.respond("Unable to ban that user. That user may be higher than the bot.")
     
 @plugin.command()
 @lightbulb.option("reason", "Reason for unban", type=str, required=False, default="Not specified")
