@@ -12,9 +12,11 @@ async def solve(ctx):
     if "life" in ctx.options.equation.lower():
         await ctx.respond("42")
         return
-    eqn = eval(ctx.options.equation)
-    resp = str(ctx.options.equation) + " = " + str(eqn)
-    await ctx.respond(resp)
-
+    try:
+        eqn = eval(ctx.options.equation)
+        resp = str(ctx.options.equation) + " = " + str(eqn)
+        await ctx.respond(resp)
+    except:
+        await ctx.respond("Invalid equation.")
 def load(bot):
     bot.add_plugin(plugin)
