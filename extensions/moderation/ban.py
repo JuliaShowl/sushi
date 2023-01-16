@@ -60,31 +60,34 @@ async def ban(ctx: lightbulb.Context, user: hikari.User, delete_message: int, re
 @lightbulb.command("unban", "Unban a user", auto_defer = True, pass_options = True)
 @lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
 async def unban(ctx: lightbulb.Context, user: hikari.Snowflake, reason: str):
-    username = await ctx.bot.rest.fetch_user(user)
-    await ctx.respond(f"Unbanning **{username}**")
-    await ctx.bot.rest.unban_member(user = user, guild = ctx.get_guild(), reason = reason)
-    dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        username = await ctx.bot.rest.fetch_user(user)
+        await ctx.respond(f"Unbanning **{username}**")
+        await ctx.bot.rest.unban_member(user = user, guild = ctx.get_guild(), reason = reason)
+        dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
+        try:
+            service = build('sheets', 'v4', credentials=credentials)
 
-        # Call the Sheets API
-        sheet = service.spreadsheets()
-        rng = 'Sheet1!A:A'
+            # Call the Sheets API
+            sheet = service.spreadsheets()
+            rng = 'Sheet1!A:A'
 
-        # How the input data should be interpreted.
-        value_input_option = 'USER_ENTERED'
+            # How the input data should be interpreted.
+            value_input_option = 'USER_ENTERED'
 
-        value_range_body = {
-            "majorDimension": "COLUMNS",
-           'values': [[str(dt)] ,["Unban"], [str(username)], [str(user)], [str(reason)], [str(ctx.author)]]
-        }
+            value_range_body = {
+                "majorDimension": "COLUMNS",
+            'values': [[str(dt)] ,["Unban"], [str(username)], [str(user)], [str(reason)], [str(ctx.author)]]
+            }
 
-        sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
+            sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
 
-    except HttpError as err:
-        print(err)
+        except HttpError as err:
+            print(err)
 
-    await ctx.edit_last_response(f"{username} has been unbanned for `{reason}`!")
+        await ctx.edit_last_response(f"{username} has been unbanned for `{reason}`!")
+    except:
+        await ctx.respond("Unable to unban that user. Please make sure you use their UserID and check if they are banned or not.")
     
 @plugin.command()
 @lightbulb.command("banlist", "List of users banned from server")
