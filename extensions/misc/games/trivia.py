@@ -41,39 +41,46 @@ async def trivia(ctx: lightbulb.Context, count: int, category: str, difficulty: 
     quiz = response.json()
     score = 0
     for i in range(count):
-        answer = quiz[i]["correctAnswer"]
-        question = quiz[i]["question"]
-        view = miru.View(timeout=60)  # Create a new view
-        a0 = optButtons(quiz[i]["correctAnswer"], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["correctAnswer"])
-        a1 = optButtons(quiz[i]["incorrectAnswers"][0], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][0])
-        a2 = optButtons(quiz[i]["incorrectAnswers"][1], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][1])
-        a3 = optButtons(quiz[i]["incorrectAnswers"][2], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][2])
-        answers = [a0, a1, a2, a3]
-        new_list = random.sample(answers, 4)
-        for j in new_list:
-            view.add_item(j)
-        if i == 0:
-                message = await ctx.respond(f"> **{question}**", components=view)
-        else:
-            message = await ctx.get_channel().send(f"> **{question}**", components=view)
-
-        await view.start(message)  # Start listening for interactions
-
-        await view.wait()  # Wait until the view is stopped or times out
-
-        for i in view.children:
-            i.disabled=True
-
-        await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
-
-        if hasattr(view, "answer"):  # Check if there is an answer
-            if view.answer == answer:
-                score += 1
-                await ctx.get_channel().send(f"{answer} is the correct answer!")
+        try:
+            answer = quiz[i]["correctAnswer"]
+            question = quiz[i]["question"]
+            view = miru.View(timeout=60)  # Create a new view
+            a0 = optButtons(quiz[i]["correctAnswer"], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["correctAnswer"])
+            a1 = optButtons(quiz[i]["incorrectAnswers"][0], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][0])
+            a2 = optButtons(quiz[i]["incorrectAnswers"][1], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][1])
+            a3 = optButtons(quiz[i]["incorrectAnswers"][2], ctx.author.id, style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][2])
+            answers = [a0, a1, a2, a3]
+            new_list = random.sample(answers, 4)
+            for j in new_list:
+                view.add_item(j)
+            if i == 0:
+                    message = await ctx.respond(f"> **{question}**", components=view)
             else:
-                await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
-        else:
-            await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
+                message = await ctx.get_channel().send(f"> **{question}**", components=view)
+
+            await view.start(message)  # Start listening for interactions
+
+            await view.wait()  # Wait until the view is stopped or times out
+
+            for i in view.children:
+                i.disabled=True
+
+            await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
+
+            if hasattr(view, "answer"):  # Check if there is an answer
+                if view.answer == answer:
+                    score += 1
+                    await ctx.get_channel().send(f"{answer} is the correct answer!")
+                else:
+                    await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+            else:
+                await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
+        except:
+            score += 1
+            if i == 0:
+                await ctx.respond("One or more of the answers was too long for the buttons. You were automatically given a point.")
+            else:
+                await ctx.respond("One or more of the answers was too long for the buttons. You were automatically given a point.")
     if count > 1:
         await ctx.get_channel().send(f"Total score: **{score}/{count}**")
 

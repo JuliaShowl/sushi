@@ -48,44 +48,50 @@ async def trivia(ctx, count, category, difficulty):
     quiz = response.json()
     scores = {}
     for i in range(count):
-        answer = quiz[i]["correctAnswer"]
-        question = quiz[i]["question"]
-        view = miru.View(timeout=60)  # Create a new view
-        a0 = optButtons(quiz[i]["correctAnswer"], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["correctAnswer"])
-        a1 = optButtons(quiz[i]["incorrectAnswers"][0], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][0])
-        a2 = optButtons(quiz[i]["incorrectAnswers"][1], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][1])
-        a3 = optButtons(quiz[i]["incorrectAnswers"][2], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][2])
-        answers = [a0, a1, a2, a3]
-        new_list = random.sample(answers, 4)
-        for j in new_list:
-            view.add_item(j)
-        if i == 0:
-                message = await ctx.respond(f"> **{question}**", components=view)
-        else:
-            message = await ctx.get_channel().send(f"> **{question}**", components=view)
-
-        await view.start(message)  # Start listening for interactions
-
-        await view.wait()  # Wait until the view is stopped or times out
-
-        for i in view.children:
-            i.disabled=True
-
-        await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
-
-        if hasattr(view, "answer"):  # Check if there is an answer
-            if view.answer == answer:
-                if f"{view.author}" not in scores:
-                    scores[f"{view.author}"] = 1
-                else:
-                    scores[f"{view.author}"] += 1
-                await ctx.get_channel().send(f"{answer} is the correct answer!")
+        try:
+            answer = quiz[i]["correctAnswer"]
+            question = quiz[i]["question"]
+            view = miru.View(timeout=60)  # Create a new view
+            a0 = optButtons(quiz[i]["correctAnswer"], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["correctAnswer"])
+            a1 = optButtons(quiz[i]["incorrectAnswers"][0], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][0])
+            a2 = optButtons(quiz[i]["incorrectAnswers"][1], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][1])
+            a3 = optButtons(quiz[i]["incorrectAnswers"][2], style=hikari.ButtonStyle.PRIMARY, label=quiz[i]["incorrectAnswers"][2])
+            answers = [a0, a1, a2, a3]
+            new_list = random.sample(answers, 4)
+            for j in new_list:
+                view.add_item(j)
+            if i == 0:
+                    message = await ctx.respond(f"> **{question}**", components=view)
             else:
-                if f"{view.author}" not in scores:
-                        scores[f"{view.author}"] = 0
-                await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
-        else:
-            await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
+                message = await ctx.get_channel().send(f"> **{question}**", components=view)
+
+            await view.start(message)  # Start listening for interactions
+
+            await view.wait()  # Wait until the view is stopped or times out
+
+            for i in view.children:
+                i.disabled=True
+
+            await message.edit(components=view.build()) # Disable all buttons after view is stopped or times out
+
+            if hasattr(view, "answer"):  # Check if there is an answer
+                if view.answer == answer:
+                    if f"{view.author}" not in scores:
+                        scores[f"{view.author}"] = 1
+                    else:
+                        scores[f"{view.author}"] += 1
+                    await ctx.get_channel().send(f"{answer} is the correct answer!")
+                else:
+                    if f"{view.author}" not in scores:
+                            scores[f"{view.author}"] = 0
+                    await ctx.get_channel().send(f"{view.answer} is not the correct answer. The correct answer is {answer}.")
+            else:
+                await ctx.get_channel().send(f"Did not receive an answer in time! The correct answer is {answer}.")
+        except:
+            if i == 0:
+                await ctx.respond("One or more of the answers was too long for the buttons. No one was awarded a point.")
+            else:
+                await ctx.respond("One or more of the answers was too long for the buttons. No one was awarded a point.")
     if count > 1:
         results = ""
         for i in scores:
