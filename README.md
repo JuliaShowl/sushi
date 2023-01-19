@@ -12,5 +12,9 @@ Media responders will require a spreadsheet with embedable links or files to upl
 
 ## Getting Started
 - Python 3.8 or above
-- Install dependencies with `python3 -m pip install -r requirements.txt`
 - Create a [Google service account](https://console.cloud.google.com/)
+
+## Setup
+- Create virtual environment: `python3 -m venv venv`
+- Enter virtual environment: `source ./venv/bin/activate`
+- Install dependencies: `pip3 install -r requirements.txt`
