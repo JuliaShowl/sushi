@@ -13,6 +13,7 @@ async def help(ctx):
     egg = "`/egg` - Returns a picture of Egg, Souris' cat\n"
     plant = "`/souris_plant` - Returns a picture of Souris' bonsai or some random Reddit plant\n"
     munchie = "`/munchie` - Returns a picture of Munchie.\n"
+    pic = "`/pic <query> <quantity|optional>` - Get pictures!\n"
     add = "`/add <responder> <media>` - Adds media to database.\n"
     remove = "`/remove <media>` - Removes media from database.\n"
     zim = "`/zimzalabim` - Are you ready for this?\n"
@@ -24,7 +25,7 @@ async def help(ctx):
     yt_stats = "`/yt_stats <query> <count|optional>` - Get statistics for a YouTube video.\n"
     avatar = "`/avatar <user>` - Gets the avatar of a user.\n"
     whois = "`/whois <user>` - Gets the statistics of a given user **WIP**.\n"
-    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{add}{remove}\n**Misc Responders**\n{math}{meme}\n**Utilities**\n{yoink}{yt}{yt_stats}{avatar}{whois}"
+    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}\n**Utilities**\n{yoink}{yt}{yt_stats}{avatar}{whois}"
     help.append(hikari.Embed(title="SushiBot Help",description=helpresp, color='b0ffe3'))
 
     fq = "`/fq <count|optional> <options|optional>` - Guess the flag\n"
