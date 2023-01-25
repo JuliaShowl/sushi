@@ -11,22 +11,25 @@ plugin = lightbulb.Plugin('pexels')
 @lightbulb.command('pic','Get a photo', pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def meme(ctx: lightbulb.Context, query: str, quantity: int):
-    PEXELS_API_KEY = ''
-    api = API(PEXELS_API_KEY)
+    try:
+        PEXELS_API_KEY = ''
+        api = API(PEXELS_API_KEY)
 
-    api.search(query, page=1, results_per_page=quantity)
+        api.search(query, page=1, results_per_page=quantity)
 
-    photos = api.get_entries()
-    pics = []
-    for photo in photos:
-        embed = hikari.Embed()
-        embed.set_image(photo.original)
-        embed.set_footer(f"Photographer: {photo.photographer}")
-        pics.append(embed)
-    
-    buttons = [nav.FirstButton(), nav.PrevButton(), nav.StopButton(), nav.NextButton(), nav.LastButton()]
-    navigator = nav.NavigatorView(pages=pics, buttons=buttons)
-    await navigator.send(ctx.interaction)
+        photos = api.get_entries()
+        pics = []
+        for photo in photos:
+            embed = hikari.Embed()
+            embed.set_image(photo.original)
+            embed.set_footer(f"Photographer: {photo.photographer}")
+            pics.append(embed)
+        
+        buttons = [nav.FirstButton(), nav.PrevButton(), nav.StopButton(), nav.NextButton(), nav.LastButton()]
+        navigator = nav.NavigatorView(pages=pics, buttons=buttons)
+        await navigator.send(ctx.interaction)
+    except:
+        await ctx.respond("Unable to get images with that query.")
 
 def load(bot):
     bot.add_plugin(plugin)
