@@ -1,6 +1,3 @@
-from attr import has
-from click import style
-from discord import components
 import lightbulb
 import hikari
 import miru
@@ -47,14 +44,14 @@ class challengeButton(miru.Button):
 @plugin.command
 @lightbulb.option("user", "Specifically challenge another user", type=hikari.User, required=False)
 @lightbulb.option("players", "Play against a computer or against each other. Default single player if not challenging a user", type=int, min_value=1, max_value=2, default=1, required=False)
-@lightbulb.command("rps", "Rock, paper, scissors", pass_options=True, auto_defer=True)
+@lightbulb.command("rps", "Rock, paper, scissors", pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def rps(ctx: lightbulb.Context, players: int, user: hikari.User):
     if user is not None:
         challenge = miru.View(timeout=60)  # Create a new view
-        challenge.add_item(challengeButton("Yes", user.id, style=hikari.ButtonStyle.SUCCESS, label="Yes"))
-        challenge.add_item(challengeButton("No", user.id, style=hikari.ButtonStyle.DANGER, label="No"))
-        message = await ctx.respond(f"{ctx.author.mention} is challenging {user.mention} to RPS! Click yes to accept.", components=challenge, user_mentions=True)
+        challenge.add_item(challengeButton("Yes", user.id, style=hikari.ButtonStyle.SUCCESS, label="Accept"))
+        challenge.add_item(challengeButton("No", user.id, style=hikari.ButtonStyle.DANGER, label="Decline"))
+        message = await ctx.respond(f"{ctx.author.mention} is challenging {user.mention} to RPS!", components=challenge, user_mentions=True)
 
         await challenge.start(message)  # Start listening for interactions
 
@@ -114,7 +111,7 @@ async def rps(ctx: lightbulb.Context, players: int, user: hikari.User):
                 else:
                     await ctx.get_channel().send(f"Did not receive an answer in time!")
         else:
-            await ctx.get_channel().send(f"Did not receive an answer in time!")
+            await ctx.respond(f"Did not receive an answer in time!")
     elif players == 1:
         view = miru.View(timeout=60)  # Create a new view
         view.add_item(optButtons("Rock", ctx.author.id, players, style=hikari.ButtonStyle.PRIMARY, label="Rock"))
@@ -151,7 +148,7 @@ async def rps(ctx: lightbulb.Context, players: int, user: hikari.User):
             else:
                 await ctx.get_channel().send(f"Both players chose {bot}")
         else:
-            await ctx.get_channel().send(f"Did not receive an answer in time!")
+            await ctx.respond(f"Did not receive an answer in time!")
     
     else:
         p1view = miru.View(timeout=60)  # Create a new view
@@ -197,7 +194,7 @@ async def rps(ctx: lightbulb.Context, players: int, user: hikari.User):
             else:
                 await ctx.get_channel().send(f"Both players chose {p1}")
         else:
-            await ctx.get_channel().send(f"Did not receive an answer in time!")
+            await ctx.respond(f"Did not receive an answer in time!")
 
 
 def load(bot):
