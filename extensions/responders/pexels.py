@@ -21,7 +21,7 @@ async def meme(ctx: lightbulb.Context, query: str, quantity: int):
         pics = []
         for photo in photos:
             embed = hikari.Embed()
-            embed.set_image(photo.original)
+            embed.set_image(photo.original) # Change to photo.small/photo.medium/photo.large for faster loads
             embed.set_footer(f"Photographer: {photo.photographer}")
             pics.append(embed)
         

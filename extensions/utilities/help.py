@@ -25,7 +25,9 @@ async def help(ctx):
     yt_stats = "`/yt_stats <query> <count|optional>` - Get statistics for a YouTube video.\n"
     avatar = "`/avatar <user>` - Gets the avatar of a user.\n"
     whois = "`/whois <user>` - Gets the statistics of a given user **WIP**.\n"
-    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}\n**Utilities**\n{yoink}{yt}{yt_stats}{avatar}{whois}"
+    translate = "`/translate <query> <source|optional> <target|optional>` - Translate strings.\n"
+    languages = "`/lnguages` - Get a list of supported languages.\n"
+    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}\n**Utilities**\n{translate}{languages}{yoink}{yt}{yt_stats}{avatar}{whois}"
     help.append(hikari.Embed(title="SushiBot Help",description=helpresp, color='b0ffe3'))
 
     fq = "`/fq <count|optional> <options|optional>` - Guess the flag\n"
