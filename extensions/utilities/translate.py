@@ -68,7 +68,7 @@ async def translate(ctx: lightbulb.Context, query: str, source: str, target: str
 @plugin.command
 @lightbulb.command("languages", "Get a list of supported languages", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def langauges(ctx: lightbulb.context, translator: str):
+async def langauges(ctx: lightbulb.context):
     langs_list = GoogleTranslator.get_supported_languages(as_dict=True)
     langs = ""
     for l, a in langs_list.items():
