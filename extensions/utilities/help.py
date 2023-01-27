@@ -20,6 +20,7 @@ async def help(ctx):
     pan = "`/pantomime` - Like a pantomime\n"
     math = "`/solve <equation>` - Solves equations. Supports python's math library\n"
     meme = "`/meme <sub|optional>` - Gets a random reddit meme\n"
+    dadjoke = "`/dadjoke` - Get a random dad joke.\n"
     yoink = "`/yoink <emotes>` - Grabs custom emotes.\n"
     yt = "`/yt <query> <count|optional>` - Search for YouTube videos.\n"
     yt_stats = "`/yt_stats <query> <count|optional>` - Get statistics for a YouTube video.\n"
@@ -27,7 +28,7 @@ async def help(ctx):
     whois = "`/whois <user>` - Gets the statistics of a given user **WIP**.\n"
     translate = "`/translate <query> <source|optional> <target|optional>` - Translate strings.\n"
     languages = "`/lnguages` - Get a list of supported languages.\n"
-    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}\n**Utilities**\n{translate}{languages}{yoink}{yt}{yt_stats}{avatar}{whois}"
+    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}{dadjoke}\n**Utilities**\n{translate}{languages}{yoink}{yt}{yt_stats}{avatar}{whois}"
     help.append(hikari.Embed(title="SushiBot Help",description=helpresp, color='b0ffe3'))
 
     fq = "`/fq <count|optional> <options|optional>` - Guess the flag\n"
