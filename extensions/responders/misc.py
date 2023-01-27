@@ -1,6 +1,7 @@
 from tokenize import String
 import lightbulb
 import math
+import requests
 
 plugin = lightbulb.Plugin('misc')
         
@@ -18,5 +19,14 @@ async def solve(ctx):
         await ctx.respond(resp)
     except:
         await ctx.respond("Invalid equation.")
+
+@plugin.command
+@lightbulb.command('dadjoke', "Get a random dad joke", auto_defer=True)
+@lightbulb.implements(lightbulb.SlashCommand)
+async def dadjoke(ctx: lightbulb.Context):
+    header = {"Accept": "text/plain"}
+    response = requests.get('https://icanhazdadjoke.com/', headers=header)
+    await ctx.respond(response.text)
+
 def load(bot):
     bot.add_plugin(plugin)
