@@ -22,10 +22,10 @@ plugin.add_checks(
 @plugin.command
 @lightbulb.option("target", "Target language. If not provided will be English", type=str, required=False)
 @lightbulb.option("source","Source language. If not provided will attempt to detect.", type=str, required=False)
-@lightbulb.option("query", "Query to translate", type=str, required=True)
+@lightbulb.option("text", "Text to translate", type=str, required=True)
 @lightbulb.command("translate", "Translate text", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def translate(ctx: lightbulb.Context, query: str, source: str, target: str):
+async def translate(ctx: lightbulb.Context, text: str, source: str, target: str):
     target = target or 'en'
     source = source or 'auto'
     if source == 'kr': source = 'ko'
@@ -34,7 +34,8 @@ async def translate(ctx: lightbulb.Context, query: str, source: str, target: str
     if target == 'jp': target = 'ja'
 
     if source == 'ko' or source == 'korean' or target == 'ko' or target == 'korean' or source == 'ja' or source == "japanese" or target == 'ja' or target == "japanese":
-        payload = {"source": source, "target": target, "text": query}
+        client, secret = random.choice(list(dict.items()))
+        payload = {"source": source, "target": target, "text": text}
         headers = {
             "X-Naver-Client-Id": client,
             "X-Naver-Client-Secret": secret,
@@ -47,21 +48,21 @@ async def translate(ctx: lightbulb.Context, query: str, source: str, target: str
             result = msg.get("result", None)
             if not result:
                 translator = GoogleTranslator(source=source, target=target)
-                result = translator.translate(query)
-                await ctx.respond(f'{query} -> {result}')
+                result = translator.translate(text)
+                await ctx.respond(f'{text} -> {result}')
                 return
                 
             result = result.get("translatedText")
-            await ctx.respond(f'{query} -> {result}')
+            await ctx.respond(f'{text} -> {result}')
             return
         except:
             pass
     else:
-        translator = GoogleTranslator(source='auto', target=target)
+        translator = GoogleTranslator(source=source, target=target)
     try:
-        result = translator.translate(query)
+        result = translator.translate(text)
         
-        await ctx.respond(f'{query} -> {result}')
+        await ctx.respond(f'{text} -> {result}')
     except:
         await ctx.respond("Unable to translate.")
 
