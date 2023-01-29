@@ -1,6 +1,5 @@
 import hikari
 import lightbulb
-import re
 
 plugin = lightbulb.Plugin("stickers")
 plugin.add_checks(

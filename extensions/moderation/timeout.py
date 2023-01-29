@@ -1,4 +1,3 @@
-from tokenize import String
 from datetime import datetime, timedelta
 import lightbulb
 import hikari
@@ -17,7 +16,8 @@ credentials = service_account.Credentials.from_service_account_file(
 plugin = lightbulb.Plugin('timeout')
 plugin.add_checks(
     lightbulb.checks.has_guild_permissions(hikari.Permissions.MODERATE_MEMBERS),
-    lightbulb.checks.bot_has_guild_permissions(hikari.Permissions.MODERATE_MEMBERS)
+    lightbulb.checks.bot_has_guild_permissions(hikari.Permissions.MODERATE_MEMBERS),
+    lightbulb.guild_only
 )
 
 @plugin.command()
@@ -38,36 +38,43 @@ async def timeout(ctx: lightbulb.Context, user: hikari.User, second: int, minute
         return
     
     if days == 0 and hour == 0 and minute == 0 and second == 0:
-        await ctx.respond(f"Removing timeout from **{user}**")
-        txt = f"Timeout for {user} has been removed successfully!"
-        await ctx.bot.rest.edit_member(user = user.id, guild = ctx.get_guild(), communication_disabled_until=then, reason=reason)
-        await ctx.edit_last_response(txt)
-        return
+        try:
+            await ctx.respond(f"Removing timeout from **{user}**")
+            txt = f"Timeout for {user} has been removed successfully!"
+            await ctx.bot.rest.edit_member(user = user.id, guild = ctx.get_guild(), communication_disabled_until=then, reason=reason)
+            await ctx.edit_last_response(txt)
+            return
+        except:
+            await ctx.respond("Unable to remove the timeout from that user. They may not be timed out.")
+            return
 
     else:
-        await ctx.respond(f"Attempting to timeout **{user}**")
-        txt = f"{user} has been timed out until <t:{int(then.timestamp())}:R> for `{ctx.options.reason}`"
-        await ctx.bot.rest.edit_member(user = user.id, guild = ctx.get_guild(), communication_disabled_until=then, reason=reason)
         try:
-            service = build('sheets', 'v4', credentials=credentials)
+            await ctx.respond(f"Attempting to timeout **{user}**")
+            txt = f"{user} has been timed out until <t:{int(then.timestamp())}:R> for `{ctx.options.reason}`"
+            await ctx.bot.rest.edit_member(user = user.id, guild = ctx.get_guild(), communication_disabled_until=then, reason=reason)
+            try:
+                service = build('sheets', 'v4', credentials=credentials)
 
-            # Call the Sheets API
-            sheet = service.spreadsheets()
-            rng = 'Sheet1!A:A'
+                # Call the Sheets API
+                sheet = service.spreadsheets()
+                rng = 'Sheet1!A:A'
 
-            # How the input data should be interpreted.
-            value_input_option = 'USER_ENTERED'
+                # How the input data should be interpreted.
+                value_input_option = 'USER_ENTERED'
 
-            value_range_body = {
-                "majorDimension": "COLUMNS",
-                'values': [[str(now.strftime("%Y-%m-%d %H:%M:%S"))] ,["Timeout"], [str(user)], [str(user.id)], [str(ctx.options.reason)], [str(ctx.author)], [str(then-now)]]
-            }
+                value_range_body = {
+                    "majorDimension": "COLUMNS",
+                    'values': [[str(now.strftime("%Y-%m-%d %H:%M:%S"))] ,["Timeout"], [str(user)], [str(user.id)], [str(ctx.options.reason)], [str(ctx.author)], [str(then-now)]]
+                }
 
-            sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
+                sheet.values().append(spreadsheetId=PUNISHMENTS, range=rng, valueInputOption=value_input_option, body=value_range_body).execute()
 
-        except HttpError as err:
-            print(err)
-        await ctx.edit_last_response(txt)
+            except HttpError as err:
+                print(err)
+            await ctx.edit_last_response(txt)
+        except:
+            await ctx.respond("Unable to timeout that user. That user may be higher than the bot.")
 
 def load(bot):
     bot.add_plugin(plugin)

@@ -1,7 +1,6 @@
-from tokenize import String
 import lightbulb
-import random
 import hikari
+from . import remove_media
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -13,7 +12,6 @@ SERVICE_ACCOUNT_FILE = ''
 credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
-
 plugin = lightbulb.Plugin('modify')
 plugin.add_checks(
     lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES)
@@ -21,10 +19,18 @@ plugin.add_checks(
 
 @plugin.command
 @lightbulb.option("media","Media to be added", type=str, required=True)
-@lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant","munchie"])
+@lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant","munchie", "bread", "heejin", "hyunjin", "haseul", "yeojin", "vivi", "kimlip", "jinsoul", "choerry", "yves", "chuu", "gowon", "olivia hye"])
 @lightbulb.command("add", "Add media to database", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def add(ctx: lightbulb.Context, responder: str, media: str):
+    if "https://discord.com/channels/" in media:
+        message_ids = media.split('/')
+        message = await ctx.bot.rest.fetch_message(message_ids[-2],message_ids[-1])
+        media = []
+        for a in message.attachments:
+            media.append(str(a.url))
+    else:
+        media = media.split(',')
     try:
         service = build('sheets', 'v4', credentials=credentials)
 
@@ -35,7 +41,7 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
         value_input_option = 'USER_ENTERED'
         value_range_body = {
                 "majorDimension": "COLUMNS",
-                'values': [[media]]
+                'values': [media]
         }
     except HttpError as err:
         print(err)
@@ -60,11 +66,16 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
             sheet.values().append(spreadsheetId=SUSHI, range="Sheet4!A:A", valueInputOption=value_input_option, body=value_range_body).execute()
         except HttpError as err:
             print(err)
+    elif(responder == "bread"):
+        try:
+            sheet.values().append(spreadsheetId=SUSHI, range="Sheet5!A:A", valueInputOption=value_input_option, body=value_range_body).execute()
+        except HttpError as err:
+            print(err)
     else:
         await ctx.respond("Responder not recgonized")
         return
-
-    await ctx.respond(f"Added {media} to `{responder}`!")
+    pics = "\n".join(str(x) for x in media) 
+    await ctx.respond(f"Added {pics} to `{responder}`!")
 
 @plugin.command
 @lightbulb.option("media","Media to be removed", type=str, required=True)
@@ -72,103 +83,15 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def remove(ctx: lightbulb.Context, media: str):
     try:
-        service = build('sheets', 'v4', credentials=credentials)
-
-        # Call the Sheets API
-        sheet = service.spreadsheets()
-
-        value_range_body = {}
-        result = sheet.values().get(spreadsheetId=SUSHI,
-                                    range="Sheet1!A:A").execute()
-        values = result.get('values', [])
-
-        for i in range(len(values)):
-            if(values[i][0] == media):
-                request_body = {
-                    "requests":[{
-                            "deleteDimension": {
-                                "range": {
-                                "sheetId": '0',
-                                "dimension": "ROWS",
-                                "startIndex": i,
-                                "endIndex": i+1
-                                }
-                            }
-                        }]
-                }  
-                sheet.batchUpdate(spreadsheetId=SUSHI,body=request_body).execute()
-                await ctx.respond(f"Removed {media} to from database!")
-                return
-
-        result = sheet.values().get(spreadsheetId=SUSHI,
-                                    range="Sheet2!A:A").execute()
-        values = result.get('values', [])
-
-        for i in range(len(values)):
-            if(values[i][0] == media):
-                request_body = {
-                    "requests":[{
-                            "deleteDimension": {
-                                "range": {
-                                "sheetId": '1802442433',
-                                "dimension": "ROWS",
-                                "startIndex": i,
-                                "endIndex": i+1
-                                }
-                            }
-                        }]
-                }  
-                sheet.batchUpdate(spreadsheetId=SUSHI,body=request_body).execute()
-                await ctx.respond(f"Removed {media} to from database!")
-                return
-        
-        result = sheet.values().get(spreadsheetId=SUSHI,
-                                    range="Sheet3!A:A").execute()
-        values = result.get('values', [])
-
-        for i in range(len(values)):
-            if(values[i][0] == media):
-                request_body = {
-                    "requests":[{
-                            "deleteDimension": {
-                                "range": {
-                                "sheetId": '2057942648',
-                                "dimension": "ROWS",
-                                "startIndex": i,
-                                "endIndex": i+1
-                                }
-                            }
-                        }]
-                }  
-                sheet.batchUpdate(spreadsheetId=SUSHI,body=request_body).execute()
-                await ctx.respond(f"Removed {media} to from database!")
-                return
-
-        result = sheet.values().get(spreadsheetId=SUSHI,
-                                    range="Sheet4!A:A").execute()
-        values = result.get('values', [])
-
-        for i in range(len(values)):
-            if(values[i][0] == media):
-                request_body = {
-                    "requests":[{
-                            "deleteDimension": {
-                                "range": {
-                                "sheetId": '269933147',
-                                "dimension": "ROWS",
-                                "startIndex": i,
-                                "endIndex": i+1
-                                }
-                            }
-                        }]
-                }  
-                sheet.batchUpdate(spreadsheetId=SUSHI,body=request_body).execute()
-                await ctx.respond(f"Removed {media} from database!")
-                return
-    except HttpError as err:
-        print(err)
-
-    await ctx.respond(f"Unable to find media")
+        await remove_media.remove_sushi(media)
+        await remove_media.remove_egg(media)
+        await remove_media.remove_plant(media)
+        await remove_media.remove_munchie(media)
+        await remove_media.remove_bread(media)
+        await ctx.respond(f"Removed {media} from database!")
+        return
+    except:
+        await ctx.respond(f"Unable to find media")
 
 @plugin.command
 @lightbulb.command("Add Sushi", "Add pictures to sushi", auto_defer=True, pass_options=True)

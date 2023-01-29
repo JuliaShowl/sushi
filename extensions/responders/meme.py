@@ -1,4 +1,3 @@
-from tokenize import String
 import lightbulb
 import requests
 
@@ -6,7 +5,7 @@ plugin = lightbulb.Plugin('meme')
 
 @plugin.command
 @lightbulb.option('sub', "Get a meme from a specific subreddit", type=str, required=False)
-@lightbulb.command('meme','Get a random meme', auto_defer=True, pass_options=True)
+@lightbulb.command('meme','Get a random meme', pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def meme(ctx: lightbulb.Context, sub: str):
     if sub is not None:

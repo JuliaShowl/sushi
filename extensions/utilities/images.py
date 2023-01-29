@@ -1,9 +1,11 @@
 import lightbulb
-from miru import hikari
 from miru.ext import nav
 import requests
 
 plugin = lightbulb.Plugin('images')
+plugin.add_checks(
+    lightbulb.guild_only
+)
 
 @plugin.command
 @lightbulb.option('quantity', 'Number of photos to retreive (1-80) Default 15', type=int, required=False, min_value=1, max_value=80, default=15)
@@ -24,8 +26,7 @@ async def pic(ctx: lightbulb.Context, query: str, quantity: int):
         },
         headers={
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
-        }
-    )
+        })
 
         response = r.json().get('data').get('result').get('items')
         urls = [r.get('media') for r in response]

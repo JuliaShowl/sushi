@@ -1,4 +1,3 @@
-from tokenize import String
 import lightbulb
 import hikari
 
@@ -19,7 +18,7 @@ plugin.add_checks(
 
 @plugin.command
 @lightbulb.option('user','User to get punishments for',type=hikari.User)
-@lightbulb.command('history','See all user\'s punishments', aliases=["ph","punishments"],auto_defer=True, pass_options=True)
+@lightbulb.command('history','See all user\'s punishments', auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def history(ctx: lightbulb.Context, user: hikari.User):
     resp = []

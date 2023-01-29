@@ -1,4 +1,3 @@
-from tokenize import String
 from datetime import datetime
 import lightbulb
 import hikari
@@ -16,7 +15,8 @@ credentials = service_account.Credentials.from_service_account_file(
 
 plugin = lightbulb.Plugin('warnings')
 plugin.add_checks(
-    lightbulb.checks.has_guild_permissions(hikari.Permissions.MODERATE_MEMBERS)
+    lightbulb.checks.has_guild_permissions(hikari.Permissions.MODERATE_MEMBERS),
+    lightbulb.guild_only
 )
 
 @plugin.command

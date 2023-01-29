@@ -1,7 +1,5 @@
 import lightbulb
 import hikari
-from lightbulb.utils import pag, nav
-from lightbulb.utils.pag import EmbedPaginator
 from miru.ext import nav
 
 from googleapiclient.discovery import build

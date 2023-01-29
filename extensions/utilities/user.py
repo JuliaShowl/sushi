@@ -1,12 +1,12 @@
-from datetime import datetime
 import lightbulb
 import hikari
-import pytz
 
 plugin = lightbulb.Plugin("user")
+plugin.add_checks(
+    lightbulb.guild_only
+)
 
 @plugin.command
-@lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.option("type", "Get server avatar or global avatar. Default server avatar", type=str, required=False, choices=["server", "global"])
 @lightbulb.option("user", "User to get avatar for", required=True, type=hikari.User)
 @lightbulb.command("avatar", "Get the avatar of a user", auto_defer=True, pass_options=True)

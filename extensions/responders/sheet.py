@@ -1,7 +1,5 @@
-from tokenize import String
 import lightbulb
 import random
-import hikari
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -79,6 +77,21 @@ async def munchie(ctx):
     except HttpError as err:
         print(err)
 
+@plugin.command
+@lightbulb.command('bread','Returns a bread')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def bread(ctx):
+    try: 
+        service = build('sheets', 'v4', credentials=credentials)
+        # Call the Sheets API
+        sheet = service.spreadsheets()
+        result = sheet.values().get(spreadsheetId=SUSHI,
+                                    range="Sheet5!A:A").execute()
+        values = result.get('values', [])
+        i = random.randrange(0,len(values))
+        await ctx.respond(values[i][0])
+    except HttpError as err:
+        print(err)
 
 def load(bot):
     bot.add_plugin(plugin)

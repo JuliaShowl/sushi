@@ -1,4 +1,3 @@
-from tokenize import String
 from datetime import datetime
 import lightbulb
 import hikari
@@ -29,7 +28,7 @@ plugin.add_checks(
 async def ban(ctx: lightbulb.Context, user: hikari.User, reason: str):
     try:
         await ctx.bot.rest.kick_member(user = user.id, guild = ctx.get_guild(), reason = reason)
-        dt = datetime.now(tz=pytz.timezone("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
+        dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
         try:
             service = build('sheets', 'v4', credentials=credentials)
 
@@ -52,7 +51,7 @@ async def ban(ctx: lightbulb.Context, user: hikari.User, reason: str):
 
         await ctx.respond(f"{user} has been kicked for `{reason}`")
     except:
-        await ctx.respond("Unable to ban that user. That user may be higher than the bot.")
+        await ctx.respond("Unable to kick that user. That user may be higher than the bot.")
     
 
 def load(bot):

@@ -4,6 +4,7 @@ import requests
 import json
 import random
 
+# Documentation https://github.com/nidhaloff/deep-translator
 from deep_translator import (GoogleTranslator,
                              MicrosoftTranslator,
                              PonsTranslator,
@@ -13,6 +14,7 @@ from deep_translator import (GoogleTranslator,
                              PapagoTranslator,
                              DeeplTranslator,
                              QcriTranslator)
+
 
 plugin = lightbulb.Plugin('translate')
 plugin.add_checks(

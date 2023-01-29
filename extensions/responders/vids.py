@@ -1,8 +1,10 @@
-from tokenize import String
 import lightbulb
 import hikari
 
 plugin = lightbulb.Plugin('vids')
+plugin.add_checks(
+    lightbulb.guild_only
+)
 
 @plugin.command
 @lightbulb.command('zimzalabim','Are you ready for this?')
