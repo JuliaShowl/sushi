@@ -19,7 +19,7 @@ plugin.add_checks(
 
 @plugin.command
 @lightbulb.option("media","Media to be added", type=str, required=True)
-@lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant","munchie", "bread", "heejin", "hyunjin", "haseul", "yeojin", "vivi", "kimlip", "jinsoul", "choerry", "yves", "chuu", "gowon", "olivia hye"])
+@lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant","munchie", "bread"])
 @lightbulb.command("add", "Add media to database", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def add(ctx: lightbulb.Context, responder: str, media: str):
