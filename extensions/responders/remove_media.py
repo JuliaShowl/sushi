@@ -14,7 +14,7 @@ plugin = lightbulb.Plugin('remove_media')
 
 async def remove_sushi(media):
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
         # Call the Sheets API
         sheet = service.spreadsheets()
@@ -44,7 +44,7 @@ async def remove_sushi(media):
 
 async def remove_egg(media):
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
         # Call the Sheets API
         sheet = service.spreadsheets()
@@ -74,7 +74,7 @@ async def remove_egg(media):
 
 async def remove_plant(media):
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
         # Call the Sheets API
         sheet = service.spreadsheets()
@@ -104,7 +104,7 @@ async def remove_plant(media):
 
 async def remove_munchie(media):
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
         # Call the Sheets API
         sheet = service.spreadsheets()
@@ -134,7 +134,7 @@ async def remove_munchie(media):
 
 async def remove_bread(media):
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
         # Call the Sheets API
         sheet = service.spreadsheets()

@@ -54,7 +54,7 @@ async def timeout(ctx: lightbulb.Context, user: hikari.User, second: int, minute
             txt = f"{user} has been timed out until <t:{int(then.timestamp())}:R> for `{ctx.options.reason}`"
             await ctx.bot.rest.edit_member(user = user.id, guild = ctx.get_guild(), communication_disabled_until=then, reason=reason)
             try:
-                service = build('sheets', 'v4', credentials=credentials)
+                service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
                 # Call the Sheets API
                 sheet = service.spreadsheets()

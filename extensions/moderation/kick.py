@@ -30,7 +30,7 @@ async def ban(ctx: lightbulb.Context, user: hikari.User, reason: str):
         await ctx.bot.rest.kick_member(user = user.id, guild = ctx.get_guild(), reason = reason)
         dt = datetime.now(tz=pytz.UTC).strftime("%Y-%m-%d %H:%M:%S")
         try:
-            service = build('sheets', 'v4', credentials=credentials)
+            service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
             # Call the Sheets API
             sheet = service.spreadsheets()

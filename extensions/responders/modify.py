@@ -32,7 +32,7 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
     else:
         media = media.split(',')
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
         # Call the Sheets API
         sheet = service.spreadsheets()
@@ -103,7 +103,7 @@ async def add_sushi(ctx: lightbulb.Context, target: hikari.Message):
         urls.append([str(i.url)])
         media += i.url + "\n"
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
         # Call the Sheets API
         sheet = service.spreadsheets()
@@ -130,7 +130,7 @@ async def add_egg(ctx: lightbulb.Context, target: hikari.Message):
         urls.append([str(i.url)])
         media += i.url + "\n"
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
         # Call the Sheets API
         sheet = service.spreadsheets()
@@ -157,7 +157,7 @@ async def add_munchie(ctx: lightbulb.Context, target: hikari.Message):
         urls.append([str(i.url)])
         media += i.url + "\n"
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
         # Call the Sheets API
         sheet = service.spreadsheets()

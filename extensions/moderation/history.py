@@ -25,7 +25,7 @@ async def history(ctx: lightbulb.Context, user: hikari.User):
     response = ''
     title = "Punishments for " + str(user)
     try:
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
         # Call the Sheets API
         sheet = service.spreadsheets()

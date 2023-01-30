@@ -18,7 +18,7 @@ plugin = lightbulb.Plugin('sheet')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def sushi(ctx):
     try: 
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
         # Call the Sheets API
         sheet = service.spreadsheets()
         result = sheet.values().get(spreadsheetId=SUSHI,
@@ -34,7 +34,7 @@ async def sushi(ctx):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def egg(ctx):
     try: 
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
         # Call the Sheets API
         sheet = service.spreadsheets()
         result = sheet.values().get(spreadsheetId=SUSHI,
@@ -50,7 +50,7 @@ async def egg(ctx):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def souris_plant(ctx):
     try: 
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
         # Call the Sheets API
         sheet = service.spreadsheets()
         result = sheet.values().get(spreadsheetId=SUSHI,
@@ -66,7 +66,7 @@ async def souris_plant(ctx):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def munchie(ctx):
     try: 
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
         # Call the Sheets API
         sheet = service.spreadsheets()
         result = sheet.values().get(spreadsheetId=SUSHI,
@@ -82,7 +82,7 @@ async def munchie(ctx):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def bread(ctx):
     try: 
-        service = build('sheets', 'v4', credentials=credentials)
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
         # Call the Sheets API
         sheet = service.spreadsheets()
         result = sheet.values().get(spreadsheetId=SUSHI,
