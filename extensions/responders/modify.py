@@ -6,9 +6,10 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
-SUSHI = ''
+SUSHI = '1VeUPg5_C8DqYTGu7NXSeWd026kErQzqsi8tm16gwCww'
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-SERVICE_ACCOUNT_FILE = ''
+LOONA = '1amb6hAqnFthM9FeVtSfZJx_I9QnzoCWDsELb7QjjaVM'
+SERVICE_ACCOUNT_FILE = './discord-bot-366601-efb7cc4855b5.json'
 credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
@@ -20,17 +21,30 @@ plugin.add_checks(
 @plugin.command
 @lightbulb.option("media","Media to be added", type=str, required=True)
 @lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant","munchie", "bread"])
-@lightbulb.command("add", "Add media to database", auto_defer=True, pass_options=True)
+@lightbulb.command("add", "Add media to database", pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def add(ctx: lightbulb.Context, responder: str, media: str):
     if "https://discord.com/channels/" in media:
         message_ids = media.split('/')
         message = await ctx.bot.rest.fetch_message(message_ids[-2],message_ids[-1])
         media = []
-        for a in message.attachments:
-            media.append(str(a.url))
+        if "https://tenor.com" in str(message.content) or "https://giphy.com" in str(message.content):
+                media.append(str(message.content))
+        elif message.attachments is not None:
+            for a in message.attachments:
+                media.append(str(a.url))
+        else:
+            await ctx.respond("Unable to find media in that message.")
+            return
+        
     else:
         media = media.split(',')
+        for m in media:
+            if (".jpg" or ".jpeg" or ".JPG" or ".JPEG" or ".png" or ".PNG" or ".gif" or ".gifv" or ".webm" or ".mp4" or ".wav" or ".mp3" or ".mp4") not in m:
+                media.remove(m)
+        if not media:
+            await ctx.respond("Unable to find useable media.")
+            return
     try:
         service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
 
@@ -79,7 +93,7 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
 
 @plugin.command
 @lightbulb.option("media","Media to be removed", type=str, required=True)
-@lightbulb.command("remove", "Remove media from database", auto_defer=True, pass_options=True)
+@lightbulb.command("remove", "Remove media from database", pass_options=True, auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def remove(ctx: lightbulb.Context, media: str):
     try:
@@ -93,8 +107,10 @@ async def remove(ctx: lightbulb.Context, media: str):
     except:
         await ctx.respond(f"Unable to find media")
 
+
+
 @plugin.command
-@lightbulb.command("Add Sushi", "Add pictures to sushi", auto_defer=True, pass_options=True)
+@lightbulb.command("Add Sushi", "Add pictures to sushi", pass_options=True)
 @lightbulb.implements(lightbulb.MessageCommand)
 async def add_sushi(ctx: lightbulb.Context, target: hikari.Message):
     media = ""
@@ -121,7 +137,7 @@ async def add_sushi(ctx: lightbulb.Context, target: hikari.Message):
     await ctx.respond(f"Added {media} to `sushi`.")
 
 @plugin.command
-@lightbulb.command("Add Egg", "Add pictures to Egg", auto_defer=True, pass_options=True)
+@lightbulb.command("Add Egg", "Add pictures to Egg", pass_options=True)
 @lightbulb.implements(lightbulb.MessageCommand)
 async def add_egg(ctx: lightbulb.Context, target: hikari.Message):
     media = ""
@@ -148,7 +164,7 @@ async def add_egg(ctx: lightbulb.Context, target: hikari.Message):
     await ctx.respond(f"Added {media} to `egg`.")
 
 @plugin.command
-@lightbulb.command("Add Munchie", "Add pictures to sushi", auto_defer=True, pass_options=True)
+@lightbulb.command("Add Munchie", "Add pictures to sushi", pass_options=True)
 @lightbulb.implements(lightbulb.MessageCommand)
 async def add_munchie(ctx: lightbulb.Context, target: hikari.Message):
     media = ""
