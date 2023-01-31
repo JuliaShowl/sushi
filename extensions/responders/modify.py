@@ -1,17 +1,18 @@
 import lightbulb
 import hikari
 from . import remove_media
+import tweepy
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
-SUSHI = '1VeUPg5_C8DqYTGu7NXSeWd026kErQzqsi8tm16gwCww'
+SUSHI = ''
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-LOONA = '1amb6hAqnFthM9FeVtSfZJx_I9QnzoCWDsELb7QjjaVM'
-SERVICE_ACCOUNT_FILE = './discord-bot-366601-efb7cc4855b5.json'
+SERVICE_ACCOUNT_FILE = ''
 credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+client = tweepy.Client("Bearer Access Token")
 
 plugin = lightbulb.Plugin('modify')
 plugin.add_checks(
@@ -36,7 +37,26 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
         else:
             await ctx.respond("Unable to find media in that message.")
             return
-        
+    if "twitter.com" in media:
+        try:
+            tweet_id = media.split('/')
+            tweet_id = tweet_id[-1]
+            tweet_id = tweet_id.split('?')
+            tweet_id = tweet_id[0]
+            response = client.get_tweet(tweet_id, media_fields=['url','variants'],expansions=['attachments.media_keys'])
+            urls = response.includes["media"]
+            media = []
+            for u in urls:
+                if u["url"] is not None:
+                    media.append(u["url"])
+                if u["variants"] is not None:
+                    for i in u["variants"]:
+                        if ".mp4" in i["url"]:
+                            media.append(i["url"])
+                            break
+        except:
+            await ctx.respond("Unable to find useable media.")
+            return
     else:
         media = media.split(',')
         for m in media:

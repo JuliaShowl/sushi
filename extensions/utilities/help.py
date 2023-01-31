@@ -27,7 +27,8 @@ async def help(ctx):
     avatar = "`/avatar <user>` - Gets the avatar of a user.\n"
     translate = "`/translate <query> <source|optional> <target|optional>` - Translate strings.\n"
     languages = "`/lnguages` - Get a list of supported languages.\n"
-    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}{dadjoke}\n**Utilities**\n{translate}{languages}{yoink}{yt}{yt_stats}{avatar}"
+    twt = "`/twt <tweet>` - Get media from a tweet.\n"
+    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}{dadjoke}\n**Utilities**\n{translate}{languages}{twt}{yoink}{yt}{yt_stats}{avatar}"
     help.append(hikari.Embed(title="SushiBot Help",description=helpresp, color='b0ffe3'))
 
     fq = "`/fq <count|optional> <options|optional>` - Guess the flag\n"
