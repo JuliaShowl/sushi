@@ -12,3 +12,4 @@ hikari-miru==2.0.1
 discord==2.1.0
 discord.py==2.1.0
 deep-translator==1.9.2
+tweepy==4.12.1
