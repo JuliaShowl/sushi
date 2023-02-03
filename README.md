@@ -13,7 +13,7 @@ Media responders will require a spreadsheet with embedable links or files to upl
 ## Getting Started
 - Python 3.8 or above
 - Create a [Discord Application](https://discord.com/developers/applications)
-- Create a [Google service account](https://console.cloud.google.com/)
+- Create a [Google service account](https://console.cloud.google.com/) and project
 
 ## Setup
 - Create virtual environment: `python3 -m venv venv`
