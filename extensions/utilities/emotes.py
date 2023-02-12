@@ -13,16 +13,45 @@ animated_re = re.compile(r"<a:([^:]+):(\d+)>")
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.option("emotes", "Emotes to yoink", required=True)
-@lightbulb.command("yoink", "Steal emojis from a message.", auto_defer=True, pass_options=True)
+@lightbulb.command("yoink", "Steal emotes or sticker from a message.", pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def steal(ctx: lightbulb.Context, emotes: hikari.Message):
-    animated = animated_re.findall(emotes)
-    static = static_re.findall(emotes)
+async def yoink(ctx: lightbulb.Context, emotes: hikari.Message):
+    static = ""
+    animated = ""
+    sticker = ""
+    if "https://discord.com/channels" in emotes:
+        try:
+            message_ids = emotes.split('/')
+            message = await ctx.bot.rest.fetch_message(message_ids[-2],message_ids[-1])
+            if message.stickers:
+                sticker = message.stickers
+            else:
+                animated = animated_re.findall(message.content)
+                static = static_re.findall(message.content)
+        except:
+            await ctx.respond(":x: No custom emotes/stickers could be found on that message...")
+            return
+    else:
+        animated = animated_re.findall(emotes)
+        static = static_re.findall(emotes)
     embd = []
     images = []
 
-    if not static and not animated:
-        await ctx.respond(":x: No custom emojis could be found on that message...")
+    if not static and not animated and not sticker:
+        await ctx.respond(":x: No custom emotes/stickers could be found on that message...")
+        return
+    
+    if sticker:
+        id = sticker[0].id
+        embd = f"https://cdn.discordapp.com/stickers/{id}.png"
+
+        if str(sticker[0].format_type) == "APNG":
+            embed = hikari.Embed(description=f"{embd}\n\nPaste URL into https://ezgif.com/apng-to-gif to convert to a GIF")
+        else:
+            embed = hikari.Embed(description=embd)
+        embed.set_image(embd)
+        
+        await ctx.respond(embed=embed)
         return
     
     for name, id in static:
@@ -42,7 +71,7 @@ async def steal(ctx: lightbulb.Context, emotes: hikari.Message):
     
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.command("Steal Emote", "Steal custom emotes from a message.", auto_defer=True, pass_options=True)
+@lightbulb.command("Steal Emote", "Steal custom emotes from a message.", pass_options=True)
 @lightbulb.implements(lightbulb.MessageCommand)
 async def steal(ctx: lightbulb.Context, target: hikari.Message):
     animated = animated_re.findall(target.content)
