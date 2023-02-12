@@ -1,5 +1,6 @@
 import lightbulb
 import random
+import hikari
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -92,6 +93,49 @@ async def bread(ctx):
         await ctx.respond(values[i][0])
     except HttpError as err:
         print(err)
+
+@plugin.command
+@lightbulb.command('responders', 'Gets all responders and their total entries.', auto_defer=True)
+@lightbulb.implements(lightbulb.SlashCommand)
+async def responders(ctx: lightbulb.Context):
+    try:
+        service = build('sheets', 'v4', credentials=credentials, cache_discovery=False)
+
+        # Call the Sheets API
+        sheet = service.spreadsheets()
+
+        result = sheet.values().get(spreadsheetId=SUSHI,
+                                    range="Sheet1!A:A").execute()
+        sushi = len(result.get('values', []))
+
+        result = sheet.values().get(spreadsheetId=SUSHI,
+                                    range="Sheet2!A:A").execute()
+        egg = len(result.get('values', []))
+
+        result = sheet.values().get(spreadsheetId=SUSHI,
+                                    range="Sheet3!A:A").execute()
+        plant = len(result.get('values', []))
+
+        result = sheet.values().get(spreadsheetId=SUSHI,
+                                    range="Sheet4!A:A").execute()
+        munchie = len(result.get('values', []))
+
+        result = sheet.values().get(spreadsheetId=SUSHI,
+                                    range="Sheet5!A:A").execute()
+        bread = len(result.get('values', []))
+
+
+        resp_pets = f"Sushi - `{sushi}` entries\nEgg - `{egg}` entries\nMunchie - `{munchie}` entries\n"
+        resp_misc = f"Souris_Plant - `{plant}` entries\nBread - `{bread}` entries\n"
+
+        embed = hikari.Embed(title="Sushi Responders")
+        embed.add_field("Pets", value=resp_pets)
+        embed.add_field("Misc", value=resp_misc)
+        await ctx.respond(embed=embed)
+        
+    except HttpError as err:
+        print(err)
+
 
 def load(bot):
     bot.add_plugin(plugin)
