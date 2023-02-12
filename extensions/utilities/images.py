@@ -8,7 +8,7 @@ plugin.add_checks(
 )
 
 @plugin.command
-@lightbulb.option('quantity', 'Number of photos to retreive (1-80) Default 15', type=int, required=False, min_value=1, max_value=80, default=15)
+@lightbulb.option('quantity', 'Number of photos to retreive (1-50) Default 15', type=int, required=False, min_value=1, max_value=50, default=15)
 @lightbulb.option('query', "What do you want a photo of", type=str, required=True)
 @lightbulb.command('pic','Get a photo', pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
