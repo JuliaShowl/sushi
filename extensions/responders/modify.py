@@ -1,3 +1,4 @@
+from time import sleep
 import lightbulb
 import hikari
 from . import remove_media
@@ -14,55 +15,47 @@ credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 client = tweepy.Client("Bearer Access Token")
 
-plugin = lightbulb.Plugin('modify')
-plugin.add_checks(
-    lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES)
-)
+file_types = [".jpg" , ".jpeg" , ".JPG" , ".JPEG" , ".png" , ".PNG" , ".gif" , ".gifv" , ".webm" , ".mp4" , ".wav" , ".mp3" , ".mp4" , "https://tenor.com", "https://giphy.com"]
 
+plugin = lightbulb.Plugin('modify')
 @plugin.command
 @lightbulb.option("media","Media to be added", type=str, required=True)
 @lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant","munchie", "bread"])
-@lightbulb.command("add", "Add media to database", pass_options=True)
+@lightbulb.command("add", "Add media to database", pass_options=True, auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def add(ctx: lightbulb.Context, responder: str, media: str):
-    if "https://discord.com/channels/" in media:
-        message_ids = media.split('/')
-        message = await ctx.bot.rest.fetch_message(message_ids[-2],message_ids[-1])
-        media = []
-        if "https://tenor.com" in str(message.content) or "https://giphy.com" in str(message.content):
-                media.append(str(message.content))
-        elif message.attachments is not None:
-            for a in message.attachments:
-                media.append(str(a.url))
-        else:
-            await ctx.respond("Unable to find media in that message.")
-            return
-    if "twitter.com" in media:
-        try:
-            tweet_id = media.split('/')
-            tweet_id = tweet_id[-1]
-            tweet_id = tweet_id.split('?')
-            tweet_id = tweet_id[0]
-            response = client.get_tweet(tweet_id, media_fields=['url','variants'],expansions=['attachments.media_keys'])
-            urls = response.includes["media"]
-            media = []
-            for u in urls:
-                if u["url"] is not None:
-                    media.append(u["url"])
-                if u["variants"] is not None:
-                    for i in u["variants"]:
-                        if ".mp4" in i["url"]:
-                            media.append(i["url"])
-                            break
-        except:
-            await ctx.respond("Unable to find useable media.")
-            return
-    else:
-        media = media.split(',')
-        for m in media:
-            if (".jpg" or ".jpeg" or ".JPG" or ".JPEG" or ".png" or ".PNG" or ".gif" or ".gifv" or ".webm" or ".mp4" or ".wav" or ".mp3" or ".mp4") not in m:
-                media.remove(m)
-        if not media:
+    media = media.split(',')
+    content = []
+    for med in media:
+        if "https://discord.com/channels/" in med:
+            message_ids = med.split('/')
+            message = await ctx.bot.rest.fetch_message(message_ids[-2],message_ids[-1])
+            if "https://tenor.com" in str(message.content) or "https://giphy.com" in str(message.content):
+                    content.append(str(message.content))
+            elif message.attachments is not None:
+                for a in message.attachments:
+                    content.append(str(a.url))
+        if "twitter.com" in med:
+            try:
+                tweet_id = med.split('/')
+                tweet_id = tweet_id[-1]
+                tweet_id = tweet_id.split('?')
+                tweet_id = tweet_id[0]
+                response = client.get_tweet(tweet_id, media_fields=['url','variants'],expansions=['attachments.media_keys'])
+                urls = response.includes["media"]
+                for u in urls:
+                    if u["url"] is not None:
+                        content.append(u["url"])
+                    if u["variants"] is not None:
+                        for i in u["variants"]:
+                            if ".mp4" in i["url"]:
+                                content.append(i["url"])
+                                break
+            except:
+                pass
+        if any([x in med for x in file_types]):
+            content.append(med)
+        if not content:
             await ctx.respond("Unable to find useable media.")
             return
     try:
@@ -75,7 +68,7 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
         value_input_option = 'USER_ENTERED'
         value_range_body = {
                 "majorDimension": "COLUMNS",
-                'values': [media]
+                'values': [content]
         }
     except HttpError as err:
         print(err)
@@ -108,8 +101,12 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
     else:
         await ctx.respond("Responder not recgonized")
         return
-    pics = "\n".join(str(x) for x in media) 
-    await ctx.respond(f"Added {pics} to `{responder}`!")
+    pics = "\n".join(str(x) for x in content) 
+    if len(pics) < 2000:
+        await ctx.respond(f"Added {pics} to `{responder}`!")
+    else:
+        await ctx.respond(f"Added entries to `{responder}`!")
+
 
 @plugin.command
 @lightbulb.option("media","Media to be removed", type=str, required=True)
