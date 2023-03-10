@@ -11,7 +11,7 @@ Media responders will require a spreadsheet with embedable links or files to upl
 [`miru`](https://github.com/HyperGH/hikari-miru) - An optional component handler for hikari, inspired by discord.py's views.
 
 ## Getting Started
-- Python 3.8 or above
+- Python 3.10 or above
 - Create a [Discord Application](https://discord.com/developers/applications)
 - Create a [Google service account](https://console.cloud.google.com/) and project
 
