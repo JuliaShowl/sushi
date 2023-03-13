@@ -55,26 +55,31 @@ async def whois(ctx: lightbulb.Context, user: hikari.Member):
     join_date = calendar.timegm(join_at.utctimetuple())
 
     embed = hikari.Embed(title=f'{user}', description=user.mention, color=color)
-    embed.add_field("Guild Join Date", value=f"<t:{join_date}>")
+    embed.add_field("Guild Join Date", value=f"<t:{join_date}>",inline=True)
+
+    mbrs = await ctx.bot.rest.fetch_members(ctx.get_guild())
+    members = sorted(mbrs, key=lambda m: m.joined_at, reverse=False)
+    embed.add_field("Join Position",value=f"{str(members.index(user)+1)}/{len(members)}",inline=True)
 
     create_at = user.created_at
     create_date = calendar.timegm(create_at.utctimetuple())
-    embed.add_field("Account Creation Date", value=f"<t:{create_date}>")
+    embed.add_field("Account Creation Date", value=f"<t:{create_date}>", inline=False)
     
+
     boost = user.premium_since
     if boost is not None:
         boost_date = calendar.timegm(boost.utctimetuple())
-        embed.add_field("Boosting Since", value=f"<t:{boost_date}>")
+        embed.add_field("Boosting Since", value=f"<t:{boost_date}>",inline=True)
     else:
         boost_date = "Not boosting"
-        embed.add_field("Boosting Since", value=boost_date)
+        embed.add_field("Boosting Since", value=boost_date, inline=True)
 
     role = " ".join(str(x) for x in rol) 
     if len(role) > 1024:
         role = role[:1018]
         idx = role.rfind(" ")
         role = role[:idx] + " etc."
-    embed.add_field(f"Roles [{len(rol)}]", value=role)
+    embed.add_field(f"Roles [{len(rol)}]", value=role,inline=False)
 
     if user.guild_avatar_url:
         embed.set_thumbnail(user.guild_avatar_url)
