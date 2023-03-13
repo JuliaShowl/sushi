@@ -24,12 +24,13 @@ async def help(ctx):
     yoink = "`/yoink <emotes/message link>` - Grabs custom emotes and stickers.\n"
     yt = "`/yt <query> <count|optional>` - Search for YouTube videos.\n"
     yt_stats = "`/yt_stats <query> <count|optional>` - Get statistics for a YouTube video.\n"
-    avatar = "`/avatar <user>` - Gets the avatar of a user.\n"
+    avatar = "`/avatar <user|optional> <type|optional>` - Gets the avatar of a user.\n"
     translate = "`/translate <query> <source|optional> <target|optional>` - Translate strings.\n"
     languages = "`/lnguages` - Get a list of supported languages.\n"
     twt = "`/twt <tweet>` - Get media from a tweet.\n"
     search = "`/search <query>` - Search the web.\n"
-    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}{dadjoke}\n**Utilities**\n{translate}{languages}{search}{twt}{yoink}{yt}{yt_stats}{avatar}"
+    whois = "`/whois <user|optional>` - Get information on a user.\n"
+    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}{dadjoke}\n**Utilities**\n{translate}{languages}{search}{twt}{yoink}{yt}{yt_stats}{avatar}{whois}"
     help.append(hikari.Embed(title="SushiBot Help",description=helpresp, color='b0ffe3'))
 
     fq = "`/fq <count|optional> <options|optional>` - Guess the flag\n"

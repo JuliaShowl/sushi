@@ -1,3 +1,4 @@
+import calendar
 import lightbulb
 import hikari
 
@@ -8,11 +9,15 @@ plugin.add_checks(
 
 @plugin.command
 @lightbulb.option("type", "Get server avatar or global avatar. Default server avatar", type=str, required=False, choices=["server", "global"])
-@lightbulb.option("user", "User to get avatar for", required=True, type=hikari.User)
-@lightbulb.command("avatar", "Get the avatar of a user", auto_defer=True, pass_options=True)
+@lightbulb.option("user", "User to get avatar for", required=False, type=hikari.User)
+@lightbulb.command("avatar", "Get the avatar of a user", pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def avatar(ctx: lightbulb.Context, type: str, user: hikari.User):
-    embed = hikari.Embed(title=f'{user}\'s Avatar')
+    if user is None:
+        gld = ctx.get_guild()
+        user = await ctx.bot.rest.fetch_member(gld, ctx.author)
+    usr = await ctx.bot.rest.fetch_user(user)
+    embed = hikari.Embed(title=f'{user}\'s Avatar', color = usr.accent_color)
     type = type or "server"
     if type == "server":
         if user.guild_avatar_url:
@@ -28,5 +33,58 @@ async def avatar(ctx: lightbulb.Context, type: str, user: hikari.User):
             embed.set_image(user.default_avatar_url)
     await ctx.respond(embed=embed)
     
+@plugin.command
+@lightbulb.option("user", "User to get stats for", required=False, type=hikari.Member)
+@lightbulb.command("whois", "Get stats of a user for this server", pass_options=True)
+@lightbulb.implements(lightbulb.SlashCommand)
+async def whois(ctx: lightbulb.Context, user: hikari.Member):
+    if user is None:
+        gld = ctx.get_guild()
+        user = await ctx.bot.rest.fetch_member(gld, ctx.author)
+    roles = await user.fetch_roles()
+    roles = sorted(roles, key=lambda x: x.position, reverse=True)
+    rol = []
+    for r in roles:
+        if r.color:
+            color = r.color
+            break
+    for r in roles[:-1]:
+        rol.append(r.mention)
+
+    join_at = user.joined_at
+    join_date = calendar.timegm(join_at.utctimetuple())
+
+    embed = hikari.Embed(title=f'{user}', description=user.mention, color=color)
+    embed.add_field("Guild Join Date", value=f"<t:{join_date}>")
+
+    create_at = user.created_at
+    create_date = calendar.timegm(create_at.utctimetuple())
+    embed.add_field("Account Creation Date", value=f"<t:{create_date}>")
+    
+    boost = user.premium_since
+    if boost is not None:
+        boost_date = calendar.timegm(boost.utctimetuple())
+        embed.add_field("Boosting Since", value=f"<t:{boost_date}>")
+    else:
+        boost_date = "Not boosting"
+        embed.add_field("Boosting Since", value=boost_date)
+
+    role = " ".join(str(x) for x in rol) 
+    if len(role) > 1024:
+        role = role[:1018]
+        idx = role.rfind(" ")
+        role = role[:idx] + " etc."
+    embed.add_field(f"Roles [{len(rol)}]", value=role)
+
+    if user.guild_avatar_url:
+        embed.set_thumbnail(user.guild_avatar_url)
+    elif user.avatar_url:
+        embed.set_thumbnail(user.avatar_url)
+    else:
+        embed.set_thumbnail(user.default_avatar_url)
+    embed.set_footer(f"ID: {user.id}")
+    
+    await ctx.respond(embed=embed)
+        
 def load(bot):
     bot.add_plugin(plugin)
