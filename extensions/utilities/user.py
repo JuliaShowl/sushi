@@ -39,8 +39,9 @@ async def avatar(ctx: lightbulb.Context, type: str, user: hikari.User):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def whois(ctx: lightbulb.Context, user: hikari.Member):
     if user is None:
-        gld = ctx.get_guild()
-        user = await ctx.bot.rest.fetch_member(gld, ctx.author)
+        user = await ctx.bot.rest.fetch_member(ctx.get_guild(), ctx.author)
+    else:
+        user = await ctx.bot.rest.fetch_member(ctx.get_guild(), user)
     roles = await user.fetch_roles()
     roles = sorted(roles, key=lambda x: x.position, reverse=True)
     rol = []
