@@ -1,5 +1,5 @@
 import lightbulb
-from miru import hikari
+import hikari
 from miru.ext import nav
 import requests
 
