@@ -30,7 +30,8 @@ async def help(ctx):
     twt = "`/twt <tweet>` - Get media from a tweet.\n"
     search = "`/search <query>` - Search the web.\n"
     whois = "`/whois <user|optional>` - Get information on a user.\n"
-    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}{dadjoke}\n**Utilities**\n{translate}{languages}{search}{twt}{yoink}{yt}{yt_stats}{avatar}{whois}"
+    serverinfo = "`/serverinfo` - Get information about the server.\n"
+    helpresp = f"**Media Responders**\n{sushi}{egg}{munchie}{plant}{zim}{pan}{pic}{add}{remove}\n**Misc Responders**\n{math}{meme}{dadjoke}\n**Utilities**\n{translate}{languages}{search}{twt}{yoink}{yt}{yt_stats}{avatar}{whois}{serverinfo}"
     help.append(hikari.Embed(title="SushiBot Help",description=helpresp, color='b0ffe3'))
 
     fq = "`/fq <count|optional> <options|optional>` - Guess the flag\n"
