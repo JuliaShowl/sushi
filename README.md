@@ -22,6 +22,4 @@ Media responders will require a spreadsheet with embedable links or files to upl
 - Install dependencies: `pip3 install -r requirements.txt`
 
 ## Misc
-There are two APIs that require access tokens to use. Google and Twitter. These tokens can either be hardcoded into the bot or added as enviornment variables. You will need to do some slight alteration to the code to add them as enviornment variable. 
-
-*The creation of a twitter access token is optional. You may remove the twitter features instead.
+There are two APIs that require access tokens to use, Google and Twitter. These tokens can either be hardcoded into the bot or added as enviornment variables. You will need to do some slight alteration to the code to add them as enviornment variable. 
