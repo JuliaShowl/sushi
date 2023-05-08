@@ -3,6 +3,7 @@ import hikari
 import requests
 import json
 import random
+import tweepy
 
 # Documentation https://github.com/nidhaloff/deep-translator
 from deep_translator import (GoogleTranslator,
@@ -21,6 +22,8 @@ plugin.add_checks(
     lightbulb.guild_only
 )
 
+client = tweepy.Client("CLIENT")
+
 @plugin.command
 @lightbulb.option("target", "Target language. If not provided will be English", type=str, required=False)
 @lightbulb.option("source","Source language. If not provided will attempt to detect.", type=str, required=False)
@@ -28,6 +31,14 @@ plugin.add_checks(
 @lightbulb.command("translate", "Translate text", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def translate(ctx: lightbulb.Context, text: str, source: str, target: str):
+    if "twitter.com" in text:
+        global client
+        tweet_id = text.split('/')
+        tweet_id = tweet_id[-1]
+        tweet_id = tweet_id.split('?')
+        tweet_id = tweet_id[0]
+        response = client.get_tweet(tweet_id)
+        text = response[0]["text"]
     if target:
         target = target.lower()
     else:
