@@ -28,14 +28,20 @@ plugin.add_checks(
 @lightbulb.command("translate", "Translate text", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def translate(ctx: lightbulb.Context, text: str, source: str, target: str):
-    target = target or 'en'
-    source = source or 'auto'
-    if source == 'kr': source = 'ko'
-    if source == 'jp': source = 'ja'
-    if target == 'kr': target = 'ko'
-    if target == 'jp': target = 'ja'
+    if target:
+        target = target.lower()
+    else:
+        target = 'en'
+    if source:
+        source = source.lower()
+    else:
+        source = 'auto'
+    if source == 'kr' or source == 'korean': source = 'ko'
+    if source == 'jp' or source == 'japanese': source = 'ja'
+    if target == 'kr' or target == 'korean': target = 'ko'
+    if target == 'jp' or target == 'japanses': target = 'ja'
 
-    if source == 'ko' or source == 'korean' or target == 'ko' or target == 'korean' or source == 'ja' or source == "japanese" or target == 'ja' or target == "japanese":
+    if source == 'ko' or target == 'ko' or source == 'ja' or target == 'ja':
         client, secret = random.choice(list(dict.items()))
         payload = {"source": source, "target": target, "text": text}
         headers = {
