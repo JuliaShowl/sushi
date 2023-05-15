@@ -105,7 +105,7 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
     if len(pics) < 2000:
         await ctx.respond(f"Added {pics} to `{responder}`!")
     else:
-        await ctx.respond(f"Added entries to `{responder}`!")
+        await ctx.respond(f"Added `{len(content)}` entries to `{responder}`!")
 
 
 @plugin.command
