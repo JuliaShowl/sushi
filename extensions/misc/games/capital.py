@@ -26,7 +26,7 @@ class optButtons(miru.Button):
 @lightbulb.option("options", "Number of answers to generate (2-6) Default 4", type=int, min_value=2, max_value=6, default=4, required=False)
 @lightbulb.command("cq", "Capital quiz", pass_options=True, auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def flag(ctx: lightbulb.Context, count: int, options: int):
+async def capital(ctx: lightbulb.Context, count: int, options: int):
     response = requests.get(f"https://shadify.dev/api/countries/capital-quiz?amount={count}&variants={options}")
     quiz = response.json()
     if count == 1:
