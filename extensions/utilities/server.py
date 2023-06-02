@@ -53,7 +53,7 @@ async def whois(ctx: lightbulb.Context):
     embed.add_field("Stickers", value=len(stickers), inline=True)
 
     boosters = guild.premium_subscription_count
-    embed.add_field("Boosters", value=boosters, inline=True)
+    embed.add_field("Boosts", value=boosters, inline=True)
 
     create_date = calendar.timegm(guild.created_at.utctimetuple())
     embed.add_field(f"Guild Create Date", value=f"<t:{create_date}>",inline=False)
