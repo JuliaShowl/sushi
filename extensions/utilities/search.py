@@ -38,9 +38,9 @@ async def search(ctx: lightbulb.Context, query: str):
             for r in result['items']:
                 if r.get('title') is not None:
                     if r.get('desc') is not None:
-                        embed = hikari.Embed(title=r['title'], description=f"{r['desc']}\n\n[Link]({r['url']})")
+                        embed = hikari.Embed(title=r['title'], description=f"{r['desc']}", url=r['url'])
                     else:
-                        embed = hikari.Embed(title=r['title'], description=f"[Link]({r['url']})")
+                        embed = hikari.Embed(title=r['title'], url=r['url'])
                     if r.get('media') is not None:
                         embed.set_image(r['media'][0]['pict']['url'])
                     if r.get('thumbnail') is not None:
