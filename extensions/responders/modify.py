@@ -151,10 +151,10 @@ async def add_sushi(ctx: lightbulb.Context, target: hikari.Message):
     except HttpError as err:
         print(err)
 
-    if len(media) < 1950:
-        await ctx.respond(f"Added `{len(media)}` entries\n{media} to `sushi`.")
+    if len(urls) < 1950:
+        await ctx.respond(f"Added `{len(urls)}` entries\n{media} to `sushi`.")
     else:
-        await ctx.respond(f"Added `{len(media)}` entries to `sushi`.")
+        await ctx.respond(f"Added `{len(urls)}` entries to `sushi`.")
 
 @plugin.command
 @lightbulb.command("Add Egg", "Add pictures to Egg", pass_options=True)
@@ -181,10 +181,10 @@ async def add_egg(ctx: lightbulb.Context, target: hikari.Message):
     except HttpError as err:
         print(err)
 
-    if len(media) < 1950:
-        await ctx.respond(f"Added `{len(media)}` entries\n{media} to `egg`.")
+    if len(urls) < 1950:
+        await ctx.respond(f"Added `{len(urls)}` entries\n{media} to `egg`.")
     else:
-        await ctx.respond(f"Added `{len(media)}` entries to `egg`.")
+        await ctx.respond(f"Added `{len(urls)}` entries to `egg`.")
 
 @plugin.command
 @lightbulb.command("Add Munchie", "Add pictures to sushi", pass_options=True)
@@ -211,10 +211,10 @@ async def add_munchie(ctx: lightbulb.Context, target: hikari.Message):
     except HttpError as err:
         print(err)
 
-    if len(media) < 1950:
-        await ctx.respond(f"Added `{len(media)}` entries\n{media} to `munchie`.")
+    if len(urls) < 1950:
+        await ctx.respond(f"Added `{len(urls)}` entries\n{media} to `munchie`.")
     else:
-        await ctx.respond(f"Added `{len(media)}` entries to `munchie`.")
+        await ctx.respond(f"Added `{len(urls)}` entries to `munchie`.")
 
 def load(bot):
     bot.add_plugin(plugin)
