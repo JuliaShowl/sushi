@@ -8,10 +8,11 @@ plugin.add_checks(
 )
 
 @plugin.command
+@lightbulb.option("text", "Include the text from the tweet?", type=bool, required=False, default=False, choices=[True,False])
 @lightbulb.option("tweet", "Tweet to get images from.", type=str, required=True)
 @lightbulb.command("twt", "Get images from a tweet", pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def twt(ctx: lightbulb.context, tweet: str):
+async def twt(ctx: lightbulb.context, tweet: str, text: bool):
     if "twitter.com" in tweet or "x.com" in tweet:
         try:
             tweet_id = tweet.split('/')
@@ -22,7 +23,11 @@ async def twt(ctx: lightbulb.context, tweet: str):
             media = response.json().get('mediaURLs')
             if media:
                 pics = "\n".join(str(x) for x in media) 
-                await ctx.respond(pics)
+                if text:
+                    txt = response.json().get('text')
+                    await ctx.respond(f'{txt}\n{pics}')
+                else:
+                    await ctx.respond(pics)
             else:
                 await ctx.respond("Unable to get media from that tweet.")
         except:
