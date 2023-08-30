@@ -1,4 +1,3 @@
-from turtle import color
 import requests
 import lightbulb
 import re
