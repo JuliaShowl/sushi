@@ -2,7 +2,7 @@ from time import sleep
 import lightbulb
 import hikari
 from . import remove_media
-import tweepy
+import requests
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -13,7 +13,6 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 SERVICE_ACCOUNT_FILE = ''
 credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-client = tweepy.Client("Bearer Access Token")
 
 file_types = [".jpg" , ".jpeg" , ".JPG" , ".JPEG" , ".png" , ".PNG" , ".gif" , ".gifv" , ".webm" , ".mp4" , ".wav" , ".mp3" , ".mp4" , "https://tenor.com", "https://giphy.com"]
 
@@ -35,22 +34,16 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
             elif message.attachments is not None:
                 for a in message.attachments:
                     content.append(str(a.url))
-        if "twitter.com" in med:
+        if "twitter.com" in med or "x.com" in med:
             try:
                 tweet_id = med.split('/')
                 tweet_id = tweet_id[-1]
                 tweet_id = tweet_id.split('?')
                 tweet_id = tweet_id[0]
-                response = client.get_tweet(tweet_id, media_fields=['url','variants'],expansions=['attachments.media_keys'])
-                urls = response.includes["media"]
-                for u in urls:
-                    if u["url"] is not None:
-                        content.append(u["url"])
-                    if u["variants"] is not None:
-                        for i in u["variants"]:
-                            if ".mp4" in i["url"]:
-                                content.append(i["url"])
-                                break
+                response = requests.get(f'https://api.vxtwitter.com/Twitter/status/{tweet_id}')
+                med = response.json().get('mediaURLs')
+                for m in med:
+                    content.append(m)
             except:
                 pass
         if any([x in med for x in file_types]):
