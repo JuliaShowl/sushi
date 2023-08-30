@@ -14,7 +14,6 @@ Media responders will require a spreadsheet with embedable links or files to upl
 - Python 3.9 or above
 - Create a [Discord Application](https://discord.com/developers/applications)
 - Create a [Google service account](https://console.cloud.google.com/) and project
-- Create a [Twitter access token](https://developer.twitter.com/en/portal/dashboard)*
 
 ## Setup
 - Create virtual environment: `python3 -m venv venv`
@@ -22,4 +21,4 @@ Media responders will require a spreadsheet with embedable links or files to upl
 - Install dependencies: `pip3 install -r requirements.txt`
 
 ## Misc
-There are two APIs that require access tokens to use, Google and Twitter. These tokens can either be hardcoded into the bot or added as enviornment variables. You will need to do some slight alteration to the code to add them as enviornment variable. 
+The Google API requires an access token to use. This token can either be hardcoded into the bot or added as enviornment variables. You will need to do some slight alteration to the code to add them as enviornment variable. 
