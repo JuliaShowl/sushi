@@ -27,12 +27,15 @@ async def twt(ctx: lightbulb.context, tweet: str, text: bool):
                 pics = "\n".join(str(x) for x in media) 
                 if text:
                     txt = response.json().get('text')
-                    txt = re.sub(r'https://t.co\S+', '', txt)
-                    dsp = response.json().get('user_name')
-                    url = response.json().get('tweetURL')
-                    embed = hikari.Embed(title=f'{dsp} on Twitter', description=txt, color='00ACEE', url=url)
-                    await ctx.respond(embed=embed)
-                    await ctx.get_channel().send(pics)
+                    if txt:
+                        txt = re.sub(r'https://t.co\S+', '', txt)
+                        dsp = response.json().get('user_name')
+                        url = response.json().get('tweetURL')
+                        embed = hikari.Embed(title=f'{dsp} on Twitter', description=txt, color='00ACEE', url=url)
+                        await ctx.respond(embed=embed)
+                        await ctx.get_channel().send(pics)
+                    else:
+                        await ctx.respond(pics)
                 else:
                     await ctx.respond(pics)
             else:
