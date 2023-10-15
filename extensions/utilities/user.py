@@ -8,7 +8,7 @@ plugin.add_checks(
 )
 
 @plugin.command
-@lightbulb.option("type", "Get server avatar or global avatar. Default server avatar", type=str, required=False, choices=["server", "global"])
+@lightbulb.option("type", "Get server avatar or global avatar. Default server avatar", type=str, required=False, choices=["Server", "Global"])
 @lightbulb.option("user", "User to get avatar for", required=False, type=hikari.User)
 @lightbulb.command("avatar", "Get the avatar of a user", pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
@@ -17,9 +17,10 @@ async def avatar(ctx: lightbulb.Context, type: str, user: hikari.User):
         gld = ctx.get_guild()
         user = await ctx.bot.rest.fetch_member(gld, ctx.author)
     usr = await ctx.bot.rest.fetch_user(user)
-    embed = hikari.Embed(title=f'{user}\'s Avatar', color = usr.accent_color)
-    type = type or "server"
-    if type == "server":
+    ur = str(usr)
+    type = type or "Server"
+    embed = hikari.Embed(title=f'{ur}\'s {type} Avatar', color = usr.accent_color)
+    if type == "Server":
         if user.guild_avatar_url:
             embed.set_image(user.guild_avatar_url)
         elif user.avatar_url:
@@ -55,7 +56,9 @@ async def whois(ctx: lightbulb.Context, user: hikari.Member):
     join_at = user.joined_at
     join_date = calendar.timegm(join_at.utctimetuple())
 
-    embed = hikari.Embed(title=f'{user}', description=user.mention, color=color)
+    usr = await ctx.bot.rest.fetch_user(user)
+    ur = str(usr)
+    embed = hikari.Embed(title=f'{ur}', description=user.mention, color=color)
     embed.add_field("Guild Join Date", value=f"<t:{join_date}>",inline=True)
 
     mbrs = await ctx.bot.rest.fetch_members(ctx.get_guild())
