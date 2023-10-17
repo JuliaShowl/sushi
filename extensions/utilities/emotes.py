@@ -19,15 +19,19 @@ async def yoink(ctx: lightbulb.Context, emotes: hikari.Message):
     static = ""
     animated = ""
     sticker = ""
+    reactions = ""
+    ar = []
+    sr = []
     if "https://discord.com/channels" in emotes:
         try:
             message_ids = emotes.split('/')
             message = await ctx.bot.rest.fetch_message(message_ids[-2],message_ids[-1])
             if message.stickers:
                 sticker = message.stickers
-            else:
-                animated = animated_re.findall(message.content)
-                static = static_re.findall(message.content)
+            elif message.reactions:
+                reactions = message.reactions
+            animated = animated_re.findall(message.content)
+            static = static_re.findall(message.content)
         except:
             await ctx.respond(":x: No custom emotes/stickers could be found on that message...")
             return
@@ -37,7 +41,7 @@ async def yoink(ctx: lightbulb.Context, emotes: hikari.Message):
     embd = []
     images = []
 
-    if not static and not animated and not sticker:
+    if not static and not animated and not sticker and not reactions:
         await ctx.respond(":x: No custom emotes/stickers could be found on that message...")
         return
     
@@ -50,10 +54,21 @@ async def yoink(ctx: lightbulb.Context, emotes: hikari.Message):
         else:
             embed = hikari.Embed(description=embd)
         embed.set_image(embd)
-        
         await ctx.respond(embed=embed)
         return
-    
+
+    for r in reactions:
+        if animated_re.findall(str(r)):
+            ar.append(animated_re.findall(str(r))[0])
+        if static_re.findall(str(r)):
+            sr.append(static_re.findall(str(r))[0])
+
+    for name, id in sr:
+        embd.append(f"`:{name}:`\nhttps://cdn.discordapp.com/emojis/{id}.png")
+        images.append(f"https://cdn.discordapp.com/emojis/{id}.png")
+    for name, id in ar:
+        embd.append(f"`:{name}:`\nhttps://cdn.discordapp.com/emojis/{id}.gif")
+        images.append(f"https://cdn.discordapp.com/emojis/{id}.gif")
     for name, id in static:
         embd.append(f"`:{name}:`\nhttps://cdn.discordapp.com/emojis/{id}.png")
         images.append(f"https://cdn.discordapp.com/emojis/{id}.png")
