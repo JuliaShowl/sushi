@@ -28,10 +28,11 @@ async def yoink(ctx: lightbulb.Context, emotes: hikari.Message):
             message = await ctx.bot.rest.fetch_message(message_ids[-2],message_ids[-1])
             if message.stickers:
                 sticker = message.stickers
-            elif message.reactions:
+            if message.reactions:
                 reactions = message.reactions
-            animated = animated_re.findall(message.content)
-            static = static_re.findall(message.content)
+            if message.content:
+                animated = animated_re.findall(message.content)
+                static = static_re.findall(message.content)
         except:
             await ctx.respond(":x: No custom emotes/stickers could be found on that message...")
             return
