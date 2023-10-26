@@ -21,8 +21,15 @@ async def avatar(ctx: lightbulb.Context, type: str, user: hikari.User):
     type = type or "Server"
     if type == "Server":
         try:
-            embed = hikari.Embed(title=f'{ur}\'s {type} Avatar', color = usr.accent_color)
-            embed.set_image(user.guild_avatar_url)
+            if user.guild_avatar_url:
+                embed = hikari.Embed(title=f'{ur}\'s {type} Avatar', color = usr.accent_color)
+                embed.set_image(user.guild_avatar_url)
+            else:
+                embed = hikari.Embed(title=f'{ur}\'s Global Avatar', color = usr.accent_color)
+                if user.avatar_url:
+                    embed.set_image(user.avatar_url)
+                else:
+                    embed.set_image(user.default_avatar_url)
         except:
             embed = hikari.Embed(title=f'{ur}\'s Global Avatar', color = usr.accent_color)
             if user.avatar_url:
