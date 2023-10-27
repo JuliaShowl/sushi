@@ -32,7 +32,10 @@ async def twt(ctx: lightbulb.context, tweet: str, text: bool):
                         dsp = response.json().get('user_name')
                         url = response.json().get('tweetURL')
                         embed = hikari.Embed(title=f'{dsp} on Twitter', description=txt, color='00ACEE', url=url)
-                        await ctx.respond(embed=embed)
+                        if len(media) == 1 and ".jpg" in pics:
+                            embed.set_image(media[0])
+                            await ctx.respond(embed=embed)
+                            return
                         await ctx.get_channel().send(pics)
                     else:
                         await ctx.respond(pics)
