@@ -33,12 +33,13 @@ async def help(ctx):
     twt = "`/twt <tweet>` - Get media from a tweet.\n"
     search = "`/search <query>` - Search the web.\n"
     whois = "`/whois <user|optional>` - Get information about a user.\n"
+    banner = "`/banner <user|optional>` - Get the banner of a user.\n"
     serverinfo = "`/serverinfo` - Get information about the server.\n"
     choose = "`/choose <option1> <option2>` - Choose between two options.\n"
     convert = "`/convert <number> <unit1> <unit2>` - Convert between units. *Some calculations are approximations*"
     embed.add_field("Media Responders", value=f"{sushi}{egg}{munchie}{plant}{bread}{moon}{zim}{pan}{pic}{add}{remove}")
     embed.add_field("Misc Responders", value=f"{math}{meme}{dadjoke}")
-    embed.add_field("Utilities", value=f"{translate}{languages}{search}{twt}{yoink}{yt}{yt_stats}{avatar}{whois}{serverinfo}{choose}{convert}")
+    embed.add_field("Utilities", value=f"{translate}{languages}{search}{twt}{yoink}{yt}{yt_stats}{avatar}{banner}{whois}{serverinfo}{choose}{convert}")
     help.append(embed)
 
     embed = hikari.Embed(title="SushiBot Help", color='b0ffe3')

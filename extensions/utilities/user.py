@@ -43,6 +43,28 @@ async def avatar(ctx: lightbulb.Context, type: str, user: hikari.User):
         else:
             embed.set_image(user.default_avatar_url)
     await ctx.respond(embed=embed)
+
+@plugin.command
+@lightbulb.option("user", "User to get banner for", required=False, type=hikari.User)
+@lightbulb.command("banner", "Get the banner of a user", pass_options=True)
+@lightbulb.implements(lightbulb.SlashCommand)
+async def banner(ctx: lightbulb.Context, user: hikari.User):
+    if user is None:
+        gld = ctx.get_guild()
+        user = await ctx.bot.rest.fetch_member(gld, ctx.author)
+    usr = await ctx.bot.rest.fetch_user(user)
+    ur = str(usr)
+
+    try:
+        embed = hikari.Embed(title=f'{ur}\'s Banner', color = usr.accent_color)
+        if user.banner_url:
+            embed.set_image(user.banner_url)
+        else:
+            await ctx.respond(f"{ur} does not have a banner")
+            return
+        await ctx.respond(embed=embed)
+    except:
+        await ctx.respond(f"{ur} does not have a banner")
     
 @plugin.command
 @lightbulb.option("user", "User to get stats for", required=False, type=hikari.Member)
