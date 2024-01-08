@@ -45,7 +45,7 @@ async def avatar(ctx: lightbulb.Context, type: str, user: hikari.User):
     await ctx.respond(embed=embed)
 
 @plugin.command
-@lightbulb.option("user", "User to get banner for", required=False, type=hikari.User)
+@lightbulb.option("user", "User to get banner for", required=False, type=hikari.Member)
 @lightbulb.command("banner", "Get the banner of a user", pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def banner(ctx: lightbulb.Context, user: hikari.User):
@@ -57,8 +57,8 @@ async def banner(ctx: lightbulb.Context, user: hikari.User):
 
     try:
         embed = hikari.Embed(title=f'{ur}\'s Banner', color = usr.accent_color)
-        if user.banner_url:
-            embed.set_image(user.banner_url)
+        if usr.banner_url:
+            embed.set_image(usr.banner_url)
         else:
             await ctx.respond(f"{ur} does not have a banner")
             return
