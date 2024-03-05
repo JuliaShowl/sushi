@@ -27,7 +27,7 @@ plugin.add_checks(
 @lightbulb.command("translate", "Translate text", auto_defer=True, pass_options=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def translate(ctx: lightbulb.Context, text: str, source: str, target: str):
-    if "twitter.com" in text or "x.com" in tweet:
+    if "twitter.com" in text or "x.com" in text:
         global client
         tweet_id = text.split('/')
         tweet_id = tweet_id[-1]
