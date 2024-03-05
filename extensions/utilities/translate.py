@@ -11,7 +11,6 @@ from deep_translator import (GoogleTranslator,
                              LingueeTranslator,
                              MyMemoryTranslator,
                              YandexTranslator,
-                             PapagoTranslator,
                              DeeplTranslator,
                              QcriTranslator)
 
@@ -47,36 +46,7 @@ async def translate(ctx: lightbulb.Context, text: str, source: str, target: str)
         source = source.lower()
     else:
         source = 'auto'
-    if source == 'kr' or source == 'korean': source = 'ko'
-    if source == 'jp' or source == 'japanese': source = 'ja'
-    if target == 'kr' or target == 'korean': target = 'ko'
-    if target == 'jp' or target == 'japanses': target = 'ja'
 
-    if source == 'ko' or target == 'ko' or source == 'ja' or target == 'ja':
-        client, secret = random.choice(list(dict.items()))
-        payload = {"source": source, "target": target, "text": text}
-        headers = {
-            "X-Naver-Client-Id": client,
-            "X-Naver-Client-Secret": secret,
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        }
-        try: 
-            response = requests.post('https://openapi.naver.com/v1/papago/n2mt', headers=headers, data=payload)
-            res_body = json.loads(response.text)
-            msg = res_body.get("message")
-            result = msg.get("result", None)
-            if not result:
-                translator = GoogleTranslator(source=source, target=target)
-                result = translator.translate(text)
-                await ctx.respond(f'{text} -> {result}')
-                return
-                
-            result = result.get("translatedText")
-            await ctx.respond(f'{text} -> {result}')
-            return
-        except:
-            pass
-    else:
         translator = GoogleTranslator(source=source, target=target)
     try:
         result = translator.translate(text)
