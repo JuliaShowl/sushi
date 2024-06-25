@@ -18,6 +18,7 @@ file_types = [".jpg" , ".jpeg" , ".JPG" , ".JPEG" , ".png" , ".PNG" , ".gif" , "
 
 plugin = lightbulb.Plugin('modify')
 @plugin.command
+@lightbulb.option("embed","Embed images?", type=bool, required=False, default=True)
 @lightbulb.option("media","Media to be added", type=str, required=True)
 @lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant","munchie", "bread"])
 @lightbulb.command("add", "Add media to database", pass_options=True, auto_defer=True)
@@ -94,7 +95,11 @@ async def add(ctx: lightbulb.Context, responder: str, media: str):
     else:
         await ctx.respond("Responder not recgonized")
         return
-    pics = "\n".join(str(x) for x in content) 
+    if embed:
+        pics = "\n".join(str(x) for x in content)
+    else:
+        pics = ">\n".join(str("<" + x) for x in content)
+        pics = pics + ">"
     if len(pics) < 1950:
         await ctx.respond(f"Added `{len(content)}` entries\n{pics} to `{responder}`!")
     else:
