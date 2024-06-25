@@ -36,5 +36,21 @@ async def on_error(event: lightbulb.CommandErrorEvent) -> None:
     else:
         raise exception
 
+@bot.command
+@lightbulb.add_checks(lightbulb.checks.owner_only)
+@lightbulb.command('sync', "Sync commands", auto_defer=True)
+@lightbulb.implements(lightbulb.SlashCommand)
+async def manualSync(ctx: lightbulb.Context) -> None:
+    extensionList = []
+    for i in range(len(bot.extensions)):
+        extension = bot.extensions[i]
+        try:
+            bot.reload_extensions(extension)
+        except:
+            pass
+        extensionList.append(extension)
+    await bot.sync_application_commands()
+    await ctx.respond(f"Reloaded {extensionList}", flags=hikari.MessageFlag.EPHEMERAL)
+
 bot.load_extensions_from("./extensions/", recursive=True)
 bot.run()
