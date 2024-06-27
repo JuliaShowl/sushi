@@ -23,7 +23,7 @@ plugin = lightbulb.Plugin('modify')
 @lightbulb.option("responder", "Responder to be added to", type=str, required=True, choices=["sushi", "egg", "souris_plant","munchie", "bread"])
 @lightbulb.command("add", "Add media to database", pass_options=True, auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
-async def add(ctx: lightbulb.Context, responder: str, media: str):
+async def add(ctx: lightbulb.Context, responder: str, media: str, embed: bool):
     media = media.split(',')
     content = []
     for med in media:
