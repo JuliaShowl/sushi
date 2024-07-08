@@ -4,7 +4,7 @@ import miru
 
 TOKEN = ""
 bot = lightbulb.BotApp(token=TOKEN)
-miru.install(bot)
+client = miru.Client(bot)
 
 @bot.command
 @lightbulb.command('ping','Says pong!')
