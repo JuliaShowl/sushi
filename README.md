@@ -23,4 +23,4 @@ Files cannot be larger than 25MB per Discord limitations.
 ## Misc
 The Supabase API requires a url and key token to use. This information can be hardcoded into the bot or added as enviornment variables. You must make slight alterations to the code to add them as enviornment variables. 
 
-<img src="https://imgur.com/C3opkNz"/>
+<img src="https://imgur.com/C3opkNz.jpg"/>
